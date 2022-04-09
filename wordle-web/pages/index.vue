@@ -5,7 +5,7 @@
         <NuxtLogo />
         <VuetifyLogo />
       </v-card>
-      <v-card>
+      <v-card loading>
         <v-card-title class="headline">
           Welcome to the Vuetify + Nuxt.js template
         </v-card-title>
@@ -81,7 +81,11 @@
 </template>
 
 <script lang="ts">
-export default{
-  name: 'IndexPage'
+import Vue from "vue"
+import Component from "vue-class-component"
+
+@Component
+export default class IndexPage extends Vue{
+  name: string = 'IndexPage'
 }
 </script>
