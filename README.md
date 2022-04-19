@@ -47,7 +47,7 @@ This class will build on CSCD-371. It will be very difficult if you have not tak
 * Homework will be hard and will take time to complete. Do not put it off. 
 * Start homework early and come to class with questions. Starting homework late is a recipe for disaster and pain.
 * See the [**Grading System**](Homework-Grading.md) for more details
-* All assignments and due dates are in [**Assignemnts**](Assignments.md)
+* All assignments and due dates are in [**Assignments**](Assignments.md)
 * Homework will be done in pairs. If you are experiencing issues, please contact an instructor.
 * Code reviews are done individually
 * The day homework is initially due we will typically go over the assignment in class. (no guarantees)
@@ -77,7 +77,7 @@ The course work will be cross-platform. However, in class the instructors will b
 - [GitExtensions](https://gitextensions.github.io/), [GitHub Desktop](https://desktop.github.com/), (or any other git tool): There are lots of options out there for working with git. If there is a tool you like, use it! 
 
 ## Class Screen Share Recording ##
-We will try to record class presentations so that students can review after the class. Recordings will be available in Teams.
+We will try to record class presentations so that students can review after the class. Recordings will be available in [Teams](https://intellitectsp.sharepoint.com/:f:/s/EWU-CSCD379-2022-Spring/EvQdR7Ht30tKr3TZn5B6qJYBmdO0FTfx1mTHoibSh2wvdA?e=qH6mSn).
 
 Please note:
 * **Do not expect or rely on video recordings.**  We are not making any commitment to having video recordings of the class. 

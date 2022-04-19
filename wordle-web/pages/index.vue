@@ -5,7 +5,7 @@
         <NuxtLogo />
         <VuetifyLogo />
       </v-card>
-      <v-card loading>
+      <v-card>
         <v-card-title class="headline">
           Welcome to the Vuetify + Nuxt.js template
         </v-card-title>
@@ -73,7 +73,15 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
+          <v-btn color="primary" nuxt to="/game"> Game Page </v-btn>
+          <v-btn color="primary" nuxt to="/inspire"> {{ buttonText }} </v-btn>
+          <v-btn
+            color="secondary"
+            :loading="isLoading"
+            @click="changeButtonText"
+          >
+            Change Text
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-col>
@@ -81,11 +89,22 @@
 </template>
 
 <script lang="ts">
-import Vue from "vue"
-import Component from "vue-class-component"
+import Vue from 'vue'
+import Component from 'vue-class-component'
 
 @Component
-export default class IndexPage extends Vue{
+export default class IndexPage extends Vue {
   name: string = 'IndexPage'
+  buttonText: string = 'Inspire me!'
+  isLoading: boolean = false
+
+  changeButtonText() {
+    this.buttonText =
+      this.buttonText === 'Inspire me!' ? 'Inspire me again!' : 'Inspire me!'
+    this.isLoading = true
+    setTimeout(() => {
+      this.isLoading = false
+    }, 1000)
+  }
 }
 </script>
