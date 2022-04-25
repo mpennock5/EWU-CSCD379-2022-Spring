@@ -13,10 +13,10 @@ describe('Word Service', () => {
   })
 
   test('available word filter', () => {
-    var guess = "ac???"
+    const guess = 'ac???'
     const words = WordsService.availableWords(guess)
     expect(words).not.toBeNull()
     expect(words).toHaveLength(3)
-    expect(words).toContain("acorn")
+    expect(words).toContain('acorn')
   })
 })

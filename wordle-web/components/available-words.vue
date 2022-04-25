@@ -1,6 +1,3 @@
-
-
-
 <script lang="ts">
 import { Component, Vue, Prop } from 'vue-property-decorator'
 import { WordsService } from '~/scripts/wordsService'
@@ -10,15 +7,15 @@ import { Word } from '~/scripts/word'
 export default class AvailableWords extends Vue {
   @Prop({ required: true })
   wordsService!: WordsService
+
   word!: Word
-  
-  vaildWords(): string[]{
+
+  vaildWords(): string[] {
     return WordsService.availableWords(this.word.text)
   }
 
   validWordCount(): number {
     return WordsService.availableWords(this.word.text).length
-  }  
-
+  }
 }
 </script>

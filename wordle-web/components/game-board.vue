@@ -1,5 +1,8 @@
 <template>
-  <v-card width="450">
+  <v-card
+    width="450"
+    style="background: radial-gradient(circle, rgba(186,186,186,1) 0%, rgba(55,55,55,1) 100%)"
+  >
     <v-container>
       <v-row v-for="row in wordleGame.maxGuesses" :key="row" dense>
         <v-col v-for="index in wordleGame.currentWord.maxLetters" :key="index">
@@ -35,7 +38,7 @@ export default class GameBoard extends Vue {
 
   getChar(letter: Letter | null) {
     if (letter === null) return ''
-    return letter.char
+    return letter.char.toUpperCase()
   }
 
   letterColor(letter: Letter | null): string {
