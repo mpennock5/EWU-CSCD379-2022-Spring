@@ -7,6 +7,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'Wordle.api/**'
   workflow_dispatch:
 
 jobs:
@@ -53,5 +55,5 @@ jobs:
         with:
           app-name: 'WApiClass'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_3901FD5ED41B4BBEB2A8460E18B572CD }}
+          publish-profile: ${{ secrets.API_AZUREAPPSERVICE_PUBLISHPROFILE }}
           package: .
