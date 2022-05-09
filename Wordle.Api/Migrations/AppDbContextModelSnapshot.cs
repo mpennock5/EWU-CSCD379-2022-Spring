@@ -42,6 +42,32 @@ namespace Wordle.Api.Migrations
 
                     b.ToTable("ScoreStats");
                 });
+
+            modelBuilder.Entity("Wordle.Api.Data.Player", b =>
+            {
+                b.Property<int>("PlayerId")
+                .ValueGeneratedOnAdd()
+                .HasColumnType("int");
+
+                SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PlayerID"), 1L, 1);
+
+                b.Property<string>("Name")
+                    .HasColumnType("string");
+
+                b.Property<int>("GameCount")
+                    .HasColumnType("int");
+
+                b.Property<double>("AverageAttempts")
+                    .HasColumnType("double");
+
+                b.Property<int>("AverageSecondsPerGame")
+                    .HasColumnType("int");
+
+                b.HasKey("PlayerID");
+
+                b.ToTable("Players");
+
+            });
 #pragma warning restore 612, 618
         }
     }

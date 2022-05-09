@@ -27,6 +27,7 @@ builder.Services.AddScoped<ILeaderBoardService, LeaderBoardServiceMemory>();
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionString));
 builder.Services.AddScoped<ScoreStatsService>();
+builder.Services.AddScoped<Players>();
 
 var app = builder.Build();
 
@@ -36,6 +37,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
     ScoreStatsService.Seed(context);
+    Players.Seed(context);
 }
 // test pipeline
 // Configure the HTTP request pipeline.
