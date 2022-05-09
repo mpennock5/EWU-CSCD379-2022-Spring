@@ -37,6 +37,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
     ScoreStatsService.Seed(context);
 }
+// test pipeline
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
