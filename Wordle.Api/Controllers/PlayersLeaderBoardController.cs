@@ -17,13 +17,15 @@ public class PlayersLeaderBoardController : ControllerBase
         _players = players;
     }
 
+    /*
     [HttpGet]
     public string GetTop10PlayersJson()
     {
         string jsonString = JsonSerializer.Serialize(GetTop10Players());
         return jsonString;
     }
-
+    */
+    [HttpGet]
     public List<Player> GetTop10Players()
     {
         var allPlayers = new List<Player>();
