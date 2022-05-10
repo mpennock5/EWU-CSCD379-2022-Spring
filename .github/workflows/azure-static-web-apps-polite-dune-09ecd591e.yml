@@ -1,5 +1,6 @@
 name: Azure Static Web Apps CI/CD
-
+env:
+  API_URL: "https://wapiclass.azurewebsites.net"
 on:
   push:
     branches:
@@ -7,6 +8,7 @@ on:
       - "Assignment*"
     paths:
       - 'wordle-web/**'
+      - '**/azure-static-web*'
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
