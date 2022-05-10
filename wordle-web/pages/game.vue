@@ -1,75 +1,83 @@
 <template>
   <v-container fluid fill-height justify-center>
     <v-row justify="center" class="mt-2">
-      <v-tooltip bottom>
-        <template #activator="{ on, attrs }">
-          <v-btn color="primary" nuxt to="/" fab v-bind="attrs" v-on="on">
-            <v-icon> mdi-home </v-icon>
-          </v-btn>
-        </template>
-        <span> Go Home </span>
-      </v-tooltip>
-
-      <div class="text-center">
-        <v-dialog v-model="dialog" width="550">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark v-bind="attrs" v-on="on" height="4em">
-              <v-row>
-                <v-col>
-                  <h5 class="grey--text text--lighten-1">Username</h5>
-                  <br />
-                  <h3>{{ username }}</h3>
-                </v-col>
-              </v-row>
+      <v-col>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-btn color="primary" nuxt to="/" fab v-bind="attrs" v-on="on">
+              <v-icon> mdi-home </v-icon>
             </v-btn>
           </template>
+          <span> Go Home </span>
+        </v-tooltip>
+      </v-col>
 
-          <v-card>
-            <v-card-text>
-              <v-form v-on:submit.prevent class="px-3">
-                <v-card-title>
-                  Enter your name for the leaderboard!!!
-                </v-card-title>
+      <v-col>
+        <v-row justify="center" class="mt-0 pt-2">
+          <v-col class="mt-2 mb-0 pt-0 pb-0">
+            <v-card flat color="transparent" class="mt-0 mb-0 pt-0 pb-0">
+              <v-card-text
+                class="text-h3 font-weight-black text-center ma-0 pa-0"
+              >
+                !Wordle
+              </v-card-text>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-col>
 
-                <v-text-field
-                  :rules="[rules.required, rules.counter]"
-                  label="Username"
-                  v-model="username"
-                  outlined
-                  counter
-                  maxlength="25"
-                ></v-text-field>
+      <v-col>
+        <div class="float-right">
+          <v-dialog v-model="dialog" width="550">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" dark v-bind="attrs" v-on="on" height="4em">
+                <v-row>
+                  <v-col>
+                    <h5 class="grey--text text--lighten-1">Username</h5>
+                    <br />
+                    <h3>{{ username }}</h3>
+                  </v-col>
+                </v-row>
+              </v-btn>
+            </template>
 
-                <v-divider></v-divider>
+            <v-card>
+              <v-card-text>
+                <v-form v-on:submit.prevent class="px-3">
+                  <v-card-title>
+                    Enter your name for the leaderboard!!!
+                  </v-card-title>
 
-                <v-card-actions>
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    color="primary"
-                    text
-                    @click="
-                      toggleDialog()
-                      nameUpdate()
-                      evaluateName()
-                    "
-                  >
-                    Save
-                  </v-btn>
-                </v-card-actions>
-              </v-form>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </div>
-    </v-row>
+                  <v-text-field
+                    :rules="[rules.required, rules.counter]"
+                    label="Username"
+                    v-model="username"
+                    outlined
+                    counter
+                    maxlength="25"
+                  ></v-text-field>
 
-    <v-row justify="center" class="mt-0 pt-2">
-      <v-col class="mt-2 mb-0 pt-0 pb-0">
-        <v-card flat color="transparent" class="mt-0 mb-0 pt-0 pb-0">
-          <v-card-text class="text-h3 font-weight-black text-center ma-0 pa-0">
-            !Wordle
-          </v-card-text>
-        </v-card>
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      color="primary"
+                      text
+                      @click="
+                        toggleDialog()
+                        nameUpdate()
+                        evaluateName()
+                      "
+                    >
+                      Save
+                    </v-btn>
+                  </v-card-actions>
+                </v-form>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </div>
       </v-col>
     </v-row>
 
