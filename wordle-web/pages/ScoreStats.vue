@@ -1,4 +1,4 @@
-<template>
+<template onload="refreshBoard">
   <v-container fluid fill-height justify-center>
     <v-tooltip bottom>
       <template #activator="{ on, attrs }">
@@ -16,20 +16,24 @@
         <v-simple-table>
           <thead>
             <tr>
-              <th>Score</th>
-              <th>Avg. Seconds</th>
+              <th>Player Name</th>
+              <th>Games Won</th>
+              <th>Attempts Per Game</th>
+              <th>Seconds Per Game</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(stat, index) in stats" :key="index">
-              <td>{{ stat.score }}</td>
-              <td>{{ stat.averageSeconds }}</td>
+            <tr v-for="(stat, index) in leaderboard" :key="index">
+              <td>{{ stat.name }}</td>
+              <td>{{ stat.gameCount }}</td>
+              <td>{{ stat.averageAttempts }}</td>
+              <td>{{ stat.averageSecondsPerGame }}</td>
             </tr>
           </tbody>
         </v-simple-table>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="primary" @click="refreshStats"> Refresh </v-btn>
+        <v-btn color="primary" @click="refreshBoard"> Refresh </v-btn>
       </v-card-actions>
     </v-card>
   </v-container>
@@ -41,11 +45,21 @@ import { Component, Vue } from 'vue-property-decorator'
 @Component({})
 export default class ScoreStats extends Vue {
   stats: any = []
-
+  leaderboard: any = []
+  
   refreshStats() {
     this.$axios.get('/api/ScoreStats').then((response) => {
       this.stats = response.data
     })
+  }
+  refreshBoard() {
+    this.$axios.get('/api/PlayersLeaderBoard').then((response) => {
+      this.leaderboard = response.data
+    })
+  }
+  
+  beforeMount(){
+    this.refreshBoard()
   }
 }
 </script>

@@ -26,17 +26,20 @@ public class PlayersLeaderBoardController : ControllerBase
     }
     */
     [HttpGet]
-    public List<Player> GetTop10Players()
+    public IEnumerable<Player> GetTop10Players()
     {
         var allPlayers = new List<Player>();
         allPlayers.AddRange(_players.GetPlayers());
-        allPlayers.OrderByDescending(x => (7 - x.AverageAttempts) * x.GameCount);
+        
+        IEnumerable<Player> top10 = allPlayers.OrderByDescending(x => (7 - x.AverageAttempts) * x.GameCount).Take(10);
         var top10Players = new List<Player>();
-        for (int i = 0; i < allPlayers.Count && i < 10; i++)
+        /*
+        for (int i = 0; i < top10.Count() && i < 10; i++)
         {
-            top10Players.Add(allPlayers[i]);
+            top10Players.Add(top10.);
         }
-        return top10Players;
+        */
+        return top10;
     }
 
     [HttpPost]
