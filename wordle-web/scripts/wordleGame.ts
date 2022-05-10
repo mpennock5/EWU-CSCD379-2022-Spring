@@ -17,6 +17,7 @@ export class WordleGame {
   words: Word[] = []
   state: GameState = GameState.Active
   readonly maxGuesses = 6
+  public currentGuess = 0
 
   get currentWord(): Word {
     return this.words[this.words.length - 1]
@@ -24,6 +25,10 @@ export class WordleGame {
 
   get gameOver(): Boolean {
     return this.state === GameState.Won || this.state === GameState.Lost
+  }
+
+  get hasLost(): Boolean {
+    return this.state === GameState.Lost
   }
 
   get correctChars() {
@@ -49,6 +54,7 @@ export class WordleGame {
   }
 
   submitWord() {
+    this.currentGuess++
     if (this.currentWord.evaluateWord(this.word)) {
       this.state = GameState.Won
     } else if (this.words.length === this.maxGuesses) {
