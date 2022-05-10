@@ -12,9 +12,8 @@
         </v-tooltip>
       </v-col>
 
-      <v-col>
-        <v-row justify="center" class="mt-0 pt-2">
-          <v-col class="mt-2 mb-0 pt-0 pb-0">
+
+          <v-col>
             <v-card flat color="transparent" class="mt-0 mb-0 pt-0 pb-0">
               <v-card-text
                 class="text-h3 font-weight-black text-center ma-0 pa-0"
@@ -23,8 +22,7 @@
               </v-card-text>
             </v-card>
           </v-col>
-        </v-row>
-      </v-col>
+ 
 
       <v-col>
         <div class="float-right">
