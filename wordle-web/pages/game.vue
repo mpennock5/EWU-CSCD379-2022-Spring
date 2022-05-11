@@ -174,8 +174,9 @@ export default class Game extends Vue {
     if (!this.hasUniqueLocalName()) {
       this.toggleDialog()
     }
-    //api call with game info
-    //need to get this link to work dynamically
+    while(this.dialog){
+      //wait for dialog box to close, then submit score
+    }
     this.$axios.post('/api/PlayersLeaderBoard', {
       name: this.username,
       attempts: this.wordleGame.currentGuess,
@@ -220,9 +221,7 @@ export default class Game extends Vue {
   }
 
   evaluateName(): string {
-    console.log(this.word) //for cheating AKA time saving
     if (localStorage.getItem('UsernameLocal') == null) {
-      console.log('no local username found')
       return 'Guest'
     }
     return localStorage.getItem('UsernameLocal') + ''
@@ -234,7 +233,6 @@ export default class Game extends Vue {
   }
 
   nameUpdate() {
-    console.log(this.username)
     localStorage.setItem('UsernameLocal', this.username)
   }
 }
