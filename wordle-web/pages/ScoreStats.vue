@@ -32,7 +32,7 @@
               <td>{{ stat.averageAttempts }}</td>
               <td>{{ stat.averageSecondsPerGame }}</td>
               <td>
-                {{ this.totalScore(stat.gameCount, stat.averageAttempts) }}
+                {{this.totalScore(stat.gameCount, stat.averageAttempts)}} 
               </td>
             </tr>
           </tbody>
@@ -54,7 +54,8 @@ export default class ScoreStats extends Vue {
   leaderboard: any = []
 
   totalScore(numGames: number, avgTries: number) {
-    return numGames * (7 - avgTries)
+    let x = numGames * (7 - avgTries)
+    return x
   }
 
   refreshStats() {
