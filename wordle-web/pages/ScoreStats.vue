@@ -22,7 +22,6 @@
               <th>Games Won</th>
               <th>Attempts Per Game</th>
               <th>Seconds Per Game</th>
-              <th>Total Score</th>
             </tr>
           </thead>
           <tbody>
@@ -31,9 +30,6 @@
               <td>{{ stat.gameCount }}</td>
               <td>{{ stat.averageAttempts }}</td>
               <td>{{ stat.averageSecondsPerGame }}</td>
-              <td>
-                {{this.totalScore(stat.gameCount, stat.averageAttempts)}} 
-              </td>
             </tr>
           </tbody>
         </v-simple-table>
