@@ -173,16 +173,28 @@ export default class Game extends Vue {
 
     if (!this.hasUniqueLocalName()) {
       this.toggleDialog()
+      this.waitUntilDialogClosed()
+    } else {
+      this.$axios.post('/api/PlayersLeaderBoard', {
+        name: this.username,
+        attempts: this.wordleGame.currentGuess,
+        seconds: this.getTimeSeconds().toFixed(0), //removes after numbers decimal
+      })
+      this.submittedSuccess = true
     }
-    while(this.dialog){
-      //wait for dialog box to close, then submit score
+  }
+
+  waitUntilDialogClosed() {
+    if (this.dialog) {
+      //we want it to be false
+      setTimeout(this.waitUntilDialogClosed, 1000) //wait 50 millisecnds then recheck
+      return
     }
     this.$axios.post('/api/PlayersLeaderBoard', {
       name: this.username,
       attempts: this.wordleGame.currentGuess,
-      seconds: this.getTimeSeconds().toFixed(0), //removes after numbers decimal 
+      seconds: this.getTimeSeconds().toFixed(0), //removes after numbers decimal
     })
-    this.submittedSuccess = true
   }
 
   get gameResult() {
