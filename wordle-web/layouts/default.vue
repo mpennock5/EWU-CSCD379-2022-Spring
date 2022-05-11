@@ -33,6 +33,12 @@
         </v-list-item>
 
         <v-list-item>
+          <v-btn text block nuxt to="/ScoreStats">
+            Top Players <v-icon>mdi-format-list-numbered</v-icon></v-btn
+          >
+        </v-list-item>
+
+        <v-list-item>
           <v-btn text block nuxt to="/about">
             About <v-icon>mdi-help-circle</v-icon></v-btn
           >
