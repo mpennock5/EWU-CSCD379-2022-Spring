@@ -53,8 +53,8 @@ export default class ScoreStats extends Vue {
   stats: any = []
   leaderboard: any = []
 
-  totalScore(numGames: number, avgScore: number) {
-    return numGames * (7 - avgScore)
+  totalScore(numGames: number, avgTries: number) {
+    return numGames * (7 - avgTries)
   }
 
   refreshStats() {
