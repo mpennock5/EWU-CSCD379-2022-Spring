@@ -52,10 +52,11 @@ import { Component, Vue } from 'vue-property-decorator'
 export default class ScoreStats extends Vue {
   stats: any = []
   leaderboard: any = []
+  combinedScore: number = 0
 
   totalScore(numGames: number, avgTries: number) {
-    let x = numGames * (7 - avgTries)
-    return x
+    this.combinedScore = numGames * (7 - avgTries)
+    return this.combinedScore
   }
 
   refreshStats() {
