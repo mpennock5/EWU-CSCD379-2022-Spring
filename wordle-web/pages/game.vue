@@ -12,17 +12,13 @@
         </v-tooltip>
       </v-col>
 
-
-          <v-col>
-            <v-card flat color="transparent" class="mt-0 mb-0 pt-0 pb-0">
-              <v-card-text
-                class="text-h3 font-weight-black text-center ma-0 pa-0"
-              >
-                !Wordle
-              </v-card-text>
-            </v-card>
-          </v-col>
- 
+      <v-col>
+        <v-card flat color="transparent" class="mt-0 mb-0 pt-0 pb-0">
+          <v-card-text class="text-h3 font-weight-black text-center ma-0 pa-0">
+            !Wordle
+          </v-card-text>
+        </v-card>
+      </v-col>
 
       <v-col>
         <div class="float-right">
@@ -79,6 +75,8 @@
       </v-col>
     </v-row>
 
+    <!-- <v-row justify="center"> Game Time: {{ gameTimeSeconds }} </v-row> -->
+
     <v-alert
       v-if="wordleGame.gameOver"
       prominent
@@ -114,12 +112,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 import { WordsService } from '~/scripts/wordsService'
 import { GameState, WordleGame } from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
+import { Stopwatch } from 'ts-stopwatch'
 
 @Component({ components: { KeyBoard, GameBoard } })
 export default class Game extends Vue {
@@ -128,24 +127,44 @@ export default class Game extends Vue {
   username: string = this.evaluateName()
   dialog: boolean = false
   submittedSuccess: boolean = false
-  isLoaded: boolean = true //im not watching fake ads let alone real ones
-
-  mounted() {
-    setTimeout(() => {
-      this.isLoaded = true
-    }, 5000)
-  }
-
+  gameTimeSeconds: number = 0
+  stopwatch = new Stopwatch()
   rules = {
     required: (value: any) => !!value || 'Required.',
     counter: (value: string | any[]) =>
       value.length <= 25 || 'Max 25 characters',
   }
 
+  mounted() {
+    this.startTime()
+  }
+
+  startTime() {
+    this.stopwatch.start()
+  }
+
+  stopTime() {
+    this.stopwatch.stop()
+  }
+
+  getTime() {
+    return this.stopwatch.getTime()
+  }
+
+  resetTime() {
+    this.stopwatch.reset()
+  }
+
+  getTimeSeconds() {
+    return this.getTime() / 1000
+  }
+
   resetGame() {
     this.submittedSuccess = false
     this.word = WordsService.getRandomWord()
     this.wordleGame = new WordleGame(this.word)
+    this.resetTime()
+    this.startTime()
   }
 
   submitScore() {
@@ -160,16 +179,21 @@ export default class Game extends Vue {
     this.$axios.post('/api/PlayersLeaderBoard', {
       name: this.username,
       attempts: this.wordleGame.currentGuess,
-      seconds: 50, //hardcoded for now
+      seconds: this.getTimeSeconds().toFixed(0), //removes after numbers decimal 
     })
     this.submittedSuccess = true
   }
 
   get gameResult() {
     if (this.wordleGame.state === GameState.Won) {
-      return { type: 'success', text: 'You won! :^)' }
+      this.stopTime()
+      return {
+        type: 'success',
+        text: 'You won the game in ' + this.getTimeSeconds() + ' seconds!',
+      }
     }
     if (this.wordleGame.state === GameState.Lost) {
+      this.stopTime()
       return {
         type: 'error',
         text: 'You lost... :^( The word was ' + this.word,
