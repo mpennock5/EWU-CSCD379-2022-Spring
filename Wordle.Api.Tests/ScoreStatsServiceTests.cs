@@ -22,6 +22,7 @@ namespace Wordle.Api.Tests
             _context = new AppDbContext(contextOptions.Options);
             _context.Database.Migrate();
             ScoreStatsService.Seed(_context);
+            Players.Seed(_context);
             
         }
         [TestMethod]
@@ -30,23 +31,6 @@ namespace Wordle.Api.Tests
             ScoreStatsService sut = new ScoreStatsService(_context);
 
             Assert.AreEqual(6, sut.GetScoreStats().Count());
-        }
-
-        [TestMethod]
-        public void CalculateAverageSeconds()
-        {
-            ScoreStatsService sut = new ScoreStatsService(_context);
-            ScoreStat scoreStat1 = sut.GetScoreStats().First(f => f.Score == 1).Clone();
-            
-            sut.Update(1,2);
-            Assert.AreEqual((scoreStat1.TotalGames+1), sut.GetScoreStats().First(f => f.Score==1).TotalGames);
-            Assert.AreEqual(scoreStat1.AverageSeconds+(scoreStat1.AverageSeconds-2)/(scoreStat1.TotalGames+1), sut.GetScoreStats().First(f => f.Score == 1).AverageSeconds);
-
-            ScoreStat scoreStat2 = sut.GetScoreStats().First(f => f.Score == 1).Clone();
-            sut.Update(1, 4);
-
-            Assert.AreEqual((scoreStat2.TotalGames + 1), sut.GetScoreStats().First(f => f.Score == 1).TotalGames);
-            Assert.AreEqual(scoreStat2.AverageSeconds + (scoreStat2.AverageSeconds - 4) / (scoreStat2.TotalGames + 1), sut.GetScoreStats().First(f => f.Score == 1).AverageSeconds);
         }
     }
 }

@@ -44,6 +44,8 @@ namespace Wordle.Api.Services
             _context.SaveChanges();
         }
 
+        
+
         public void AddPlayer(string name, int attempts, int seconds)
         {
             //_context.Players.Add(new Player(_context.Players.Count() + 1, name, attempts, seconds));
@@ -60,14 +62,14 @@ namespace Wordle.Api.Services
         {
             if (!context.Players.Any())
             {
-                for (int i = 1; i <= 6; i++)
+                for (int i = 1; i <= 11; i++)
                 {
                     //context.Players.Add(new Player(context.Players.Count() + 1, "player" + i, 1, 600));
                     context.Players.Add(new Player()
                     {
                         Name = "player_" + i,
                         AverageAttempts = 3,
-                        AverageSecondsPerGame = 600,
+                        AverageSecondsPerGame = 600 + i,
                         GameCount = 1
                     });
                 }
