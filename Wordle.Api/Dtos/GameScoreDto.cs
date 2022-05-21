@@ -1,11 +1,11 @@
 ﻿namespace Wordle.Api.Dtos
 {
-    public class GameScore
+    public class GameScoreDto
     {
         public int Score { get; set; }
         public string Name { get; set; }
 
-        public GameScore(int score, string name)
+        public GameScoreDto(int score, string name)
         {
             Score = score;
             Name = name;
