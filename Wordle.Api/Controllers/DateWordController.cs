@@ -81,7 +81,7 @@ public class DateWordController : Controller
     }
 
     [HttpGet]
-    public string? GetDailyWord(int year, int month, int day)
+    public string? GetAnotherDailyWord(int year, int month, int day)
     {
         //Sanitize the date by dropping time data
         DateTime date = new DateTime(year, month, day);
