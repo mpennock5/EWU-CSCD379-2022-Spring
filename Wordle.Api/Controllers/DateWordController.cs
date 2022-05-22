@@ -2,12 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Concurrent;
 using Wordle.Api.Data;
+using Wordle.Api.Dtos;
 using Wordle.Api.Services;
 
 namespace Wordle.Api.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class DateWordController : Controller
 {
     private readonly AppDbContext _context;
@@ -20,6 +21,12 @@ public class DateWordController : Controller
         _context = context;
         _gameService = gameService;
     }
+
+    //[HttpGet]
+    //public IEnumerable<DailyWordStatDto> GetLast10Words()
+    //{
+
+    //}
 
     [HttpGet]
     public string? GetDailyWord(DateTime date)
@@ -71,18 +78,5 @@ public class DateWordController : Controller
                 }
             }
         }
-    }
-}
-
-internal record struct NewStruct(object Item1, object Item2)
-{
-    public static implicit operator (object, object)(NewStruct value)
-    {
-        return (value.Item1, value.Item2);
-    }
-
-    public static implicit operator NewStruct((object, object) value)
-    {
-        return new NewStruct(value.Item1, value.Item2);
     }
 }

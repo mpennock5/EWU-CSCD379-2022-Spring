@@ -1,5 +1,7 @@
 ﻿using Wordle.Api.Data;
 using System.Linq;
+using Wordle.Api.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Wordle.Api.Services
 {
@@ -35,7 +37,6 @@ namespace Wordle.Api.Services
             return game;
             
         }
-
         public Word GetWord()
         {
             int wordCount = _context.Words.Count();

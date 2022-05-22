@@ -19,7 +19,6 @@ public class ScoreStatsController : ControllerBase
     public IEnumerable<ScoreStat> Get()
     {
         return _service.GetScoreStats();
-
     }
 
     [HttpPost]
