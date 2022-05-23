@@ -125,7 +125,7 @@ export default class Game extends Vue {
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
-    }, 5000)
+    }, 500)
     this.retrieveUserName()
     setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
   }

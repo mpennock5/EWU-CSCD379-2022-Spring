@@ -109,7 +109,7 @@ import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
 
 @Component({ components: { KeyBoard, GameBoard } })
-export default class DailyWordGame extends Vue {
+export default class Game extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
@@ -117,19 +117,19 @@ export default class DailyWordGame extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  word: string = this.getDailyWord()
+  word: string = this.getWordToday()
   wordleGame = new WordleGame(this.word)
-
   isLoaded: boolean = false
 
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
-    }, 5000)
+      this.word = this.getWordToday()
+      console.log("on mount word = " + this.word);
+      
+    }, 500)
     this.retrieveUserName()
-    this.word = this.getDailyWord()
-    this.wordleGame = new WordleGame(this.word)
-    setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
+    setTimeout(() => this.startTimer(), 500) // delay is because of ad loading
   }
 
   resetGame() {
@@ -156,7 +156,7 @@ export default class DailyWordGame extends Vue {
     if (this.wordleGame.state === GameState.Lost) {
       return {
         type: 'error',
-        text: `You lost...`,
+        text: `You lost... :^( The word was ${this.word}`,
       }
     }
     return { type: '', text: '' }
@@ -226,14 +226,27 @@ export default class DailyWordGame extends Vue {
       seconds: this.timeInSeconds,
     })
   }
-  getDailyWord(): any {
-     let today = new Date()
-     return this.$axios.get('/DateWord', {
-         params:{
-             date: today.toISOString().split('T')[0]
-         }
-     })
-        .then(response => response.data)
+
+  getWordToday() {
+    let today = new Date()
+    let tempString = 'blank'
+    this.$axios
+      .get('/api/DateWord/GetWordByDate', {
+        params: {
+          year: today.getFullYear(),
+          month: today.getMonth() + 1,
+          day: today.getDate(),
+        },
+      })
+      .then((response) => {
+        tempString = response.data
+        console.log('tempString in .then: ' + tempString)
+        this.word = response.data
+        return response.data
+      })
+    console.log('tempString in getWordToday: ' + tempString)
+    //somehow get this.word = response.data before returning?
+    return tempString
   }
 }
 </script>
