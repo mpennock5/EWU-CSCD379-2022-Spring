@@ -239,7 +239,7 @@ export default class DailyWordGame extends Vue {
         tempString = response.data
         console.log("tempString in .then: "+tempString);
         this.word = response.data
-        
+        this.wordleGame = new WordleGame(response.data);
         return response.data
       })
   }
