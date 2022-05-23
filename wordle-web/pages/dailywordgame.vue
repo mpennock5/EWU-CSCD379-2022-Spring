@@ -117,7 +117,7 @@ export default class DailyWordGame extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  word: string = this.getDailyWord()
+  word: string = "apple"
   wordleGame = new WordleGame(this.word)
 
   isLoaded: boolean = false
@@ -127,8 +127,6 @@ export default class DailyWordGame extends Vue {
       this.isLoaded = true
     }, 5000)
     this.retrieveUserName()
-    this.word = this.getDailyWord()
-    this.wordleGame = new WordleGame(this.word)
     setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
   }
 
@@ -226,14 +224,29 @@ export default class DailyWordGame extends Vue {
       seconds: this.timeInSeconds,
     })
   }
-  getDailyWord(): any {
-     let today = new Date()
-     return this.$axios.get('/DateWord', {
-         params:{
-             date: today.toISOString().split('T')[0]
-         }
-     })
-        .then(response => response.data)
+  getDailyWord() {
+      let today = new Date()
+      let tempString = "blank" 
+      this.$axios
+      .get<string>('/api/DateWord/GetWordByDate', {
+        params: {
+          year: today.getFullYear(),
+          month: today.getMonth() + 1,
+          day: today.getDate(),
+        },
+      })
+      .then((response) => {
+        tempString = response.data
+        console.log("tempString in .then: "+tempString);
+        this.word = response.data
+        
+        return response.data
+      })
   }
+  
+  beforeMount(){
+      this.getDailyWord()
+  }
+
 }
 </script>

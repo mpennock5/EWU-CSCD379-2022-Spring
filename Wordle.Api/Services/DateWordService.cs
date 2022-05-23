@@ -48,10 +48,23 @@ namespace Wordle.Api.Services
         //TODO
         public int getAverageScore(DateWord word)
         {
-            return _context.DateWords
+            var scores = _context.DateWords
                 .Where(x => x == word)
-                .Include(x => x.Games)
-                .Count();
+                    .Include(x => x.Games)
+                    .ThenInclude(x => x.ScoreStat)
+                    .ThenInclude(x => x!.Score);
+
+            var listOfGames = scores.Select(x => x.Games).ToList();
+            List<int> listOfScores = new();
+
+            foreach(ScoreStat s in listOfGames)
+            {
+                listOfScores.Add(s.Score);
+            }
+
+            
+            
+            return (int)listOfScores.Average();
         }
         //TODO
         public int getAverageTime(DateWord word)
