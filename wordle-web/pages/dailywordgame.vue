@@ -109,7 +109,7 @@ import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
 
 @Component({ components: { KeyBoard, GameBoard } })
-export default class DailyWordGame extends Vue {
+export default class Game extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
@@ -117,17 +117,19 @@ export default class DailyWordGame extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  word: string = "apple"
+  word: string = this.getWordToday()
   wordleGame = new WordleGame(this.word)
-
   isLoaded: boolean = false
 
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
-    }, 5000)
+      this.word = this.getWordToday()
+      console.log("on mount word = " + this.word);
+      
+    }, 500)
     this.retrieveUserName()
-    setTimeout(() => this.startTimer(), 5000) // delay is because of ad loading
+    setTimeout(() => this.startTimer(), 500) // delay is because of ad loading
   }
 
   resetGame() {
@@ -154,7 +156,7 @@ export default class DailyWordGame extends Vue {
     if (this.wordleGame.state === GameState.Lost) {
       return {
         type: 'error',
-        text: `You lost...`,
+        text: `You lost... :^( The word was ${this.word}`,
       }
     }
     return { type: '', text: '' }
