@@ -83,7 +83,7 @@
       <v-row justify="center" >
         <v-alert v-if="wordleGame.gameOver" width="20rem" :type="gameResult.type">
           {{ gameResult.text }}
-          <v-btn class="ml-2" nuxt to="/freeplay"> Go To Freeplay? </v-btn>
+          <v-btn class="ml-2" color="primary" nuxt to="/freeplay"> Go To Freeplay? </v-btn>
         </v-alert>
       </v-row>
 
@@ -107,7 +107,7 @@ import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
 
 @Component({ components: { KeyBoard, GameBoard } })
-export default class Game extends Vue {
+export default class DailyGame extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''

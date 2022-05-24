@@ -5,15 +5,17 @@
         v-for="char in charRow"
         :key="char"
         cols="1"
-        class="mx-0 pa-0"
+        class="mr-1 pa-0"
         offset="0"
+        
       >
         <v-btn
           elevation="8"
+          
           :x-small="$vuetify.breakpoint.smAndDown"
           :color="letterColor(char) == '' ? 'info' : letterColor(char)"
           style="
-            z-index: 0;
+            white-space: nowrap;
             background: linear-gradient(
               180deg,
               rgba(0, 0, 0, 0.4) 0%,

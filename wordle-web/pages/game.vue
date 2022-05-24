@@ -71,6 +71,7 @@
         <v-col cols="3"></v-col>
         <v-col cols="6" class="mt-0 mb-0 pt-0 pb-0">
           <v-img
+          contain
             src="logo.jpeg"
             class="center"
             style="width: 400px; height: 100px"
