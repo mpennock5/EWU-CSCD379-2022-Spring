@@ -67,8 +67,8 @@ public class DailyWordTests : DatabaseBaseTests
         context.Games.Add(new Data.Game()
         {
             GameId = 1,
-            Player = player,
-            Word = word,
+            PlayerId = 3,
+            WordId = 1,
             DateEnded = new DateTime(2020, 1, 1),
             ScoreStat =  new Data.ScoreStat()
             {
@@ -82,7 +82,7 @@ public class DailyWordTests : DatabaseBaseTests
         context.DateWords.Add(new Data.DateWord()
         {
             Date = new DateTime(2020,1, 1),
-            Word = word,
+            WordId = 1,
             TotalPlays = 1,
             AverageGuesses = 1,
             AverageSeconds = 60
