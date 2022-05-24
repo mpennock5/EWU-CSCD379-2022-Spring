@@ -8,11 +8,11 @@
           </v-card-title>
           <v-card color="transparent" flat>
             <v-card-actions class="justify-center">
-              <v-btn nuxt to="/game" color="primary" x-large width="200px">
+              <v-btn nuxt to="/dailywordgame" color="accent" :large="$vuetify.breakpoint.smAndDown">
                 Play
               </v-btn>
-              <v-btn color="info" nuxt to="/dailywordgame">
-                Daily Word
+              <v-btn nuxt to="/rules" color="accent" :large="$vuetify.breakpoint.smAndDown">
+                How to play
              </v-btn> 
             </v-card-actions>
           </v-card>

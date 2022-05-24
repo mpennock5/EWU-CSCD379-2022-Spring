@@ -1,26 +1,33 @@
 <template>
-  <v-card class="ma-0 pa-0" color="transparent" flat>
-    <v-row v-for="(charRow, i) in chars" :key="i" justify="center">
-      <v-col v-for="char in charRow" :key="char" cols="1" class="ma-0 pa-0">
-        <v-container class="text-center ma-0 pa-0">
-          <v-btn
-            class="pa-1 mx-3 my-1"
-            elevation="8"
-            :color="letterColor(char) == '' ? 'info' : letterColor(char)"
-            style="
-              background: linear-gradient(
-                180deg,
-                rgba(0, 0, 0, 0.4) 0%,
-                rgba(0, 0, 0, 0) 40%,
-                rgba(0, 0, 0, 0) 100%
-              );
-            "
-            :disabled="wordleGame.gameOver"
-            @click="keyPress(char)"
-          >
-            {{ char }}
-          </v-btn>
-        </v-container>
+  <v-card class="ma-0 pa-0" color="transparent" justify="center">
+    <v-row v-for="(charRow, i) in chars" :key="i" justify="center" no-gutters>
+      <v-col
+        v-for="char in charRow"
+        :key="char"
+        cols="1"
+        class="mr-1 pa-0"
+        offset="0"
+        
+      >
+        <v-btn
+          elevation="8"
+          
+          :x-small="$vuetify.breakpoint.smAndDown"
+          :color="letterColor(char) == '' ? 'info' : letterColor(char)"
+          style="
+            white-space: nowrap;
+            background: linear-gradient(
+              180deg,
+              rgba(0, 0, 0, 0.4) 0%,
+              rgba(0, 0, 0, 0) 40%,
+              rgba(0, 0, 0, 0) 100%
+            );
+          "
+          :disabled="wordleGame.gameOver"
+          @click="keyPress(char)"
+        >
+          {{ char }}
+        </v-btn>
       </v-col>
     </v-row>
 
@@ -34,7 +41,7 @@
           Guess
         </v-btn>
       </v-col>
-
+      
       <v-col cols="8">
         <CandidateDisplay
           class="pa-0"

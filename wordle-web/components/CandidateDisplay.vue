@@ -1,11 +1,12 @@
 <template>
   <v-container fluid>
-    <v-row justify="center">
+    <v-row justify="center" class="mx-3">
       <v-col>
         <v-card
           class="d-flex justify-center"
           color="transparent"
           height="120px"
+          width="auto"
           flat
         >
           <v-btn

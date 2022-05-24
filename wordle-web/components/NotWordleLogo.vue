@@ -1,5 +1,5 @@
 <template>
-  <v-img class="notwordle-logo" src="logo.jpeg" />
+  <v-img contain class="notwordle-logo" src="logo.jpeg" />
 </template>
 
 <style>

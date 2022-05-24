@@ -1,98 +1,96 @@
 <template>
   <v-container fluid fill-height>
-    <v-container v-if="!isLoaded">
-      <v-row justify="center">
+    <v-row justify="center">
+      <v-container v-if="!isLoaded">
         <v-card loading>
           <v-card-title class="justify-center">
             You're being exploited for ad revenue, please standby...
           </v-card-title>
           <PrerollAd />
         </v-card>
-      </v-row>
-    </v-container>
+      </v-container>
+    </v-row>
+
     <v-container v-if="isLoaded">
       <v-row justify="center">
-        <v-col cols="5"></v-col>
-        <v-col cols="2" class="mt-0 mb-0 pt-0 pb-0">
-          <v-tooltip bottom>
-            <template #activator="{ on, attrs }">
-              <v-container>
-                <v-row justify="center">
-                  <v-btn
-                    color="primary"
-                    x-small
-                    nuxt
-                    to="/"
-                    fab
-                    v-bind="attrs"
-                    v-on="on"
-                  >
-                    <v-icon>mdi-home</v-icon>
-                  </v-btn>
-                </v-row>
-              </v-container>
-            </template>
-            <span> Go Home </span>
-          </v-tooltip>
-        </v-col>
-        <v-col cols="5" class="d-flex flex-row-reverse">
-          <v-dialog v-model="dialog" justify-end persistent max-width="600px">
-            <template #activator="{ on, attrs }">
-              <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                {{ playerName }}
-              </v-btn>
-            </template>
-            <v-card>
-              <v-card-text>
-                <v-text-field
-                  v-model="playerName"
-                  type="text"
-                  placeholder="Guest"
-                ></v-text-field>
-              </v-card-text>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialog = false">
-                  Close
-                </v-btn>
+        <v-tooltip bottom>
+          <template #activator="{ on, attrs }">
+            <v-container>
+              <v-row justify="center">
                 <v-btn
-                  color="blue darken-1"
-                  text
-                  @click=";(dialog = false), setUserName(playerName)"
+                  color="primary"
+                  x-small
+                  nuxt
+                  to="/"
+                  fab
+                  v-bind="attrs"
+                  v-on="on"
                 >
-                  Save
+                  <v-icon>mdi-home</v-icon>
                 </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-col>
+              </v-row>
+            </v-container>
+          </template>
+          <span> Go Home </span>
+        </v-tooltip>
       </v-row>
-      <v-row>
-        <v-col cols="3"></v-col>
-        <v-col cols="6" class="mt-0 mb-0 pt-0 pb-0">
-          <v-img
-            src="logo.jpeg"
-            class="center"
-            style="width: 400px; height: 100px"
-          />
-        </v-col>
-        <v-col cols="3">
-          <v-card-text align="right">
-            <v-icon>mdi-timer</v-icon>
-            {{ displayTimer() }}
-          </v-card-text>
-        </v-col>
+
+      <v-row justify="center" class="ma-8">
+        <v-dialog v-model="dialog" justify-end persistent max-width="600px">
+          <template #activator="{ on, attrs }">
+            <v-btn color="primary" dark v-bind="attrs" v-on="on">
+              {{ playerName }}
+            </v-btn>
+          </template>
+          <v-card>
+            <v-card-text>
+              <v-text-field
+                v-model="playerName"
+                type="text"
+                placeholder="Guest"
+              ></v-text-field>
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="dialog = false">
+                Close
+              </v-btn>
+              <v-btn
+                color="blue darken-1"
+                text
+                @click=";(dialog = false), setUserName(playerName)"
+              >
+                Save
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-row>
-      <v-row justify="center" class="mt-10">
-        <v-alert v-if="wordleGame.gameOver" width="80%" :type="gameResult.type">
+
+      <v-row justify="center">
+        <v-img
+          contain
+          src="Daily !wordle.png"
+          class="center"
+          style="width: 40rem; height: 8rem"
+        />
+      </v-row>
+
+      <v-row justify="center">
+        <p><v-icon>mdi-timer</v-icon> {{ displayTimer() }}</p>
+      </v-row>
+
+      <v-row justify="center" >
+        <v-alert v-if="wordleGame.gameOver" width="20rem" :type="gameResult.type">
           {{ gameResult.text }}
-          <v-btn class="ml-2" @click="resetGame"> Play Again? </v-btn>
+          <v-btn class="ml-2" color="primary" nuxt to="/freeplay"> Go To Freeplay? </v-btn>
         </v-alert>
       </v-row>
 
       <v-row justify="center">
         <game-board :wordleGame="wordleGame" />
       </v-row>
+
       <v-row justify="center">
         <keyboard :wordleGame="wordleGame" />
       </v-row>
@@ -109,7 +107,7 @@ import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
 
 @Component({ components: { KeyBoard, GameBoard } })
-export default class Game extends Vue {
+export default class DailyGame extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
@@ -117,26 +115,18 @@ export default class Game extends Vue {
   startTime: number = 0
   endTime: number = 0
   intervalID: any
-  word: string = this.getWordToday()
-  wordleGame = new WordleGame(this.word)
+  word: string = 'abcde'
+  wordleGame: WordleGame = new WordleGame(this.word!)
   isLoaded: boolean = false
 
   mounted() {
     setTimeout(() => {
       this.isLoaded = true
-      this.word = this.getWordToday()
-      console.log("on mount word = " + this.word);
-      
+      // this.word = this.getWordToday()
+      console.log('on mount word = ' + this.word)
     }, 500)
     this.retrieveUserName()
     setTimeout(() => this.startTimer(), 500) // delay is because of ad loading
-  }
-
-  resetGame() {
-    this.word = WordsService.getRandomWord()
-    this.wordleGame = new WordleGame(this.word)
-    this.timeInSeconds = 0
-    this.startTimer()
   }
 
   get gameResult() {
@@ -227,9 +217,9 @@ export default class Game extends Vue {
     })
   }
   getDailyWord() {
-      let today = new Date()
-      let tempString = "blank" 
-      this.$axios
+    let today = new Date()
+    let tempString = 'blank'
+    this.$axios
       .get<string>('/api/DateWord/GetWordByDate', {
         params: {
           year: today.getFullYear(),
@@ -239,16 +229,15 @@ export default class Game extends Vue {
       })
       .then((response) => {
         tempString = response.data
-        console.log("tempString in .then: "+tempString);
+        console.log('tempString in .then: ' + tempString)
         this.word = response.data
-        this.wordleGame = new WordleGame(response.data);
+        this.wordleGame = new WordleGame(response.data)
         return response.data
       })
   }
-  
-  beforeMount(){
-      this.getDailyWord()
-  }
 
+  beforeMount() {
+    this.getDailyWord()
+  }
 }
 </script>

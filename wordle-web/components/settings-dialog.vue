@@ -1,7 +1,11 @@
 <template>
   <div class>
     <v-container @click="toggleDialog">
-      Settings <v-icon>mdi-cog</v-icon>
+      <v-row >
+        <v-icon>mdi-cog</v-icon>
+        <v-spacer></v-spacer>
+        Settings
+      </v-row>
     </v-container>
 
     <v-dialog v-model="dialog" width="450">
