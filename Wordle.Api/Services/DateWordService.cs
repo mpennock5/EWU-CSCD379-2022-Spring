@@ -19,7 +19,7 @@ namespace Wordle.Api.Services
             IEnumerable<DateWord> words;
             List<DailyWordStatDto> lastTen = new();
 
-            int wordCount = _context.Words.Count();
+            int wordCount = _context.DateWords.Count();
             if (wordCount > 9)
             {
                 words = _context.DateWords.OrderBy(x => x.Date).Take(10);
@@ -63,22 +63,22 @@ namespace Wordle.Api.Services
 
         public int GetTotalPlays(DateWord word)
         {
-            return _context.DateWords
+            int plays = _context.DateWords
                 .Where(x => x == word)
                 .Include(x => x.Games)
                 .Count();
+
+            return plays;
         }
 
         //TODO:Test
         public int GetAverageScore(DateWord word)
         {
-            var scores = _context.DateWords
-                .Where(x => x == word)
-                    .Include(x => x.Games)
-                    .ThenInclude(x => x.ScoreStat)
-                    .ThenInclude(x => x!.Score);
-
-            var listOfGames = scores.Select(x => x.Games).ToList();
+            var score = _context.DateWords
+                .Where(x => x.WordId == word.WordId)
+                    .SelectMany(dateWords => dateWords.Games);
+            var listOfGames = score.Select(x => x.ScoreStat).ToList();
+            var count = score.ToList();
             List<int> listOfScores = new();
 
             foreach(ScoreStat s in listOfGames)
