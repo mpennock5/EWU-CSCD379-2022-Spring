@@ -28,26 +28,26 @@ namespace Wordle.Api.Services
                 throw new ArgumentException("Seconds must be greater than 0");
             }
             var scoreStat = _context.ScoreStats.First(x => x.Score == score);
-            scoreStat.AverageSeconds = (scoreStat.AverageSeconds * scoreStat.TotalGames + seconds) / ++scoreStat.TotalGames;
+            //scoreStat.AverageSeconds = (scoreStat.AverageSeconds * scoreStat.TotalGames + seconds) / ++scoreStat.TotalGames;
             _context.SaveChanges();
         }
         
-        public static void Seed(AppDbContext context)
-        {
-            if (!context.ScoreStats.Any())
-            {
-                for (int i = 1; i <= 6; i++)
-                {
-                    context.ScoreStats.Add(new ScoreStat()
-                    {
-                        Score = i,
-                        AverageSeconds = 0,
-                        TotalGames = 0
-                    });
+        //public static void Seed(AppDbContext context)
+        //{
+        //    if (!context.ScoreStats.Any())
+        //    {
+        //        for (int i = 1; i <= 6; i++)
+        //        {
+        //            context.ScoreStats.Add(new ScoreStat()
+        //            {
+        //                Score = i,
+        //                AverageSeconds = 0,
+        //                TotalGames = 0
+        //            });
                     
-                }
-                context.SaveChanges();
-            }
-        }
+        //        }
+        //        context.SaveChanges();
+        //    }
+        //}
     }
 }

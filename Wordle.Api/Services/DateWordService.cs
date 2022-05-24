@@ -14,10 +14,10 @@ namespace Wordle.Api.Services
         }
 
 
-        public void getLast10Words()
+        public IEnumerable<DailyWordStatDto> GetLast10Words(string? name)
         {
             IEnumerable<DateWord> words;
-            List<DailyWordStatDto> last10 = new();
+            List<DailyWordStatDto> lastTen = new();
 
             int wordCount = _context.Words.Count();
             if (wordCount > 9)
@@ -29,15 +29,39 @@ namespace Wordle.Api.Services
                 words = _context.DateWords.OrderBy(x => x.Date).Take(wordCount);
             }
 
+            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
+            var games = player.Games.Select(x => x.DateStarted).ToList();
+
             foreach (var word in words)
             {
-                DailyWordStatDto dto = new(word.Date, getTotalPlays(word), getTotalPlays(word), getTotalPlays(word));
-                last10.Add(dto);
+                DailyWordStatDto dto = new(word.Date, GetTotalPlays(word), GetAverageScore(word), GetAverageTime(word), GetHasPlayed(name, word));
+                lastTen.Add(dto);
             }
+
+            return lastTen;
 
         }
 
-        public int getTotalPlays(DateWord word)
+        public bool? GetHasPlayed(string? name, DateWord word)
+        {
+            if(name == null)
+            {
+                return null;
+            }
+            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
+            var games = player.Games.Select(x => x.DateStarted).ToList();
+            
+            if (games.Contains(word.Date))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public int GetTotalPlays(DateWord word)
         {
             return _context.DateWords
                 .Where(x => x == word)
@@ -45,8 +69,8 @@ namespace Wordle.Api.Services
                 .Count();
         }
 
-        //TODO
-        public int getAverageScore(DateWord word)
+        //TODO:Test
+        public int GetAverageScore(DateWord word)
         {
             var scores = _context.DateWords
                 .Where(x => x == word)
@@ -66,13 +90,26 @@ namespace Wordle.Api.Services
             
             return (int)listOfScores.Average();
         }
-        //TODO
-        public int getAverageTime(DateWord word)
+        //TODO:Test
+        public int GetAverageTime(DateWord word)
         {
-            return _context.DateWords
+            var scores = _context.DateWords
                 .Where(x => x == word)
-                .Include(x => x.Games)
-                .Count();
+                    .Include(x => x.Games)
+                    .ThenInclude(x => x.ScoreStat)
+                    .ThenInclude(x => x!.Seconds);
+
+            var listOfGames = scores.Select(x => x.Games).ToList();
+            List<int> listOfScores = new();
+
+            foreach (ScoreStat s in listOfGames)
+            {
+                listOfScores.Add(s.Seconds);
+            }
+
+
+
+            return (int)listOfScores.Average();
         }
     }
 }

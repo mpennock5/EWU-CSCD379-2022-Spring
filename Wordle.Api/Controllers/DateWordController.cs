@@ -13,13 +13,21 @@ public class DateWordController : Controller
 {
     private readonly AppDbContext _context;
     private readonly GameService _gameService;
+    private readonly DateWordService _dateWordService;
     private readonly static object _mutex = new();
     private static readonly ConcurrentDictionary<DateTime, string> _cache = new();
 
-    public DateWordController(AppDbContext context, GameService gameService)
+    public DateWordController(AppDbContext context, GameService gameService, DateWordService dateWordService)
     {
         _context = context;
         _gameService = gameService;
+        _dateWordService = dateWordService;
+    }
+    [Route("[action]")]
+    [HttpGet]
+    public IEnumerable<DailyWordStatDto> GetLast10DailyWords(string? name)
+    {
+        return _dateWordService.GetLast10Words(name);
     }
 
     //[HttpGet]

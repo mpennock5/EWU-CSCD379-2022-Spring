@@ -1,10 +1,13 @@
-﻿using Wordle.Api.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Wordle.Api.Data;
 
 namespace Wordle.Api.Services;
 
 public class PlayersService
 {
     private readonly AppDbContext _context;
+    
 
     public PlayersService(AppDbContext context)
     {
@@ -16,6 +19,21 @@ public class PlayersService
         var result = _context.Players.OrderBy(x => x.Name);
         return result;
     }
+
+    //public IEnumerable<Boolean> HasPlayed(string name, DateWordService dateWordService)
+    //{
+    //    var words = dateWordService.GetLast10Words();
+    //    var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
+    //    var games = player.Games.Select(x => x.DateStarted).ToList();
+    //    IList<Boolean> played = new List<Boolean>();
+    //    foreach (var date in words)
+    //    {
+    //        if (games.Contains(date.Date))
+    //        {
+    //            played
+    //        }
+    //    }
+    //}
 
     public IEnumerable<Player> GetTop10Players()
     {
