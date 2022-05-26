@@ -140,8 +140,18 @@ public class DateWordController : Controller
     [HttpPost]
     public IActionResult Post([FromBody] GameDetails gameDetails)
     {
+        DateTime date;
+        try
+        {
+            date = new DateTime(gameDetails.Year, gameDetails.Month, gameDetails.Day);
+        }
+        catch (Exception)
+        {
+            //bad date entered
+            return BadRequest();
+        }
+
         if (gameDetails == null ||
-            gameDetails.Date == null ||
             gameDetails.Player == null ||
             gameDetails.Score < 1 ||
             gameDetails.Score > 6 ||
@@ -150,7 +160,7 @@ public class DateWordController : Controller
             return BadRequest();
         }
 
-        bool request = _dateWordService.submitGame(gameDetails.Date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds);
+        bool request = _dateWordService.submitGame(date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds);
 
         if (request)
         {
@@ -164,7 +174,9 @@ public class DateWordController : Controller
 
     public class GameDetails
     {
-        public DateTime Date { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public int Day { get; set; }
         public string Player { get; set; } = null!;
         public int Score { get; set; }
         public int TimeSeconds { get; set; }
