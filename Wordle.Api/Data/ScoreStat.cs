@@ -10,8 +10,6 @@ namespace Wordle.Api.Data
         public int ScoreStatId { get; set; }
         public int Score { get; set; }
         public int Seconds { get; set; }
-        public int GameId { get; set; }
-        public Game Game { get; set; } = null!;
         
 
         public ScoreStat Clone()
@@ -21,8 +19,7 @@ namespace Wordle.Api.Data
                 ScoreStatId = ScoreStatId,
                 Score = Score,
                 Seconds = Seconds,
-                GameId = GameId,
-                Game = Game
+                
 
             };
         }
