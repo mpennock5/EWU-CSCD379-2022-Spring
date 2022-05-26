@@ -42,40 +42,24 @@ namespace Wordle.Api.Services
 
         }
 
-        public string getDTObyDate(DateTime date, string username)
-        {
-            var theDateWord = _context.DateWords.Include(x => x.Games).Include(x => x.Players).Where(x => x.Date == date);
-            var theList = theDateWord.ToList();
-            string s = "";
-            foreach(DateWord d in theList)
-            {
-                Console.WriteLine(d);
-                s+=d.ToString();
-                Console.WriteLine("\nnum games: " + d.Games.Count);
-                s += "\nnum games: " + d.Games.Count.ToString();
-                Console.WriteLine("num players: " + d.Players.Count);
-                s += "\nnum players: " + d.Players.Count.ToString();
-            }
-            return s;
-        }
-
-        public bool? GetHasPlayed(string? name, DateWord word)
+        public bool GetHasPlayed(string? name, DateWord word)
         {
             if(name == null)
             {
-                return null;
-            }
-            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
-            var games = player.Games.Select(x => x.DateStarted).ToList();
-            
-            if (games.Contains(word.Date))
-            {
-                return true;
-            }
-            else
-            {
                 return false;
             }
+            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
+            
+            foreach(var g in player.Games)
+            {
+                if(g.DateWordId == word.DateWordId)
+                {
+                    return true;
+                }
+            }
+
+            return false;  
+   
         }
 
         public int GetTotalPlays(DateWord word)
@@ -124,8 +108,6 @@ namespace Wordle.Api.Services
             {
                 listOfScores.Add(s.ScoreStat!.Seconds);
             }
-
-
 
             return (int)listOfScores.Average();
         }
