@@ -42,23 +42,24 @@ namespace Wordle.Api.Services
 
         }
 
-        public bool? GetHasPlayed(string? name, DateWord word)
+        public bool GetHasPlayed(string? name, DateWord word)
         {
             if(name == null)
             {
-                return null;
-            }
-            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
-            var games = player.Games.Select(x => x.DateStarted).ToList();
-            
-            if (games.Contains(word.Date))
-            {
-                return true;
-            }
-            else
-            {
                 return false;
             }
+            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
+            
+            foreach(var g in player.Games)
+            {
+                if(g.DateWordId == word.DateWordId)
+                {
+                    return true;
+                }
+            }
+
+            return false;  
+   
         }
 
         public int GetTotalPlays(DateWord word)
@@ -107,8 +108,6 @@ namespace Wordle.Api.Services
             {
                 listOfScores.Add(s.ScoreStat!.Seconds);
             }
-
-
 
             return (int)listOfScores.Average();
         }
