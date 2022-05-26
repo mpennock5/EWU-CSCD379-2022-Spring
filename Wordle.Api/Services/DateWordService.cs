@@ -91,37 +91,38 @@ namespace Wordle.Api.Services
         //TODO:Test
         public int GetAverageScore(DateWord word)
         {
-            var score = _context.DateWords
-                .Where(x => x.WordId == word.WordId)
-                    .SelectMany(dateWords => dateWords.Games);
-            var listOfGames = score.Select(x => x.ScoreStat).ToList();
-            var count = score.ToList();
+            var scores = _context.DateWords
+                    .Include(x => x.Games)
+                    .ThenInclude(x => x.ScoreStat)
+                    .Where(x => x.DateWordId == word.DateWordId)
+                    .SelectMany(x => x.Games).ToList();
+                    
+             
+            var count = scores.ToList();
             List<int> listOfScores = new();
 
-            foreach(ScoreStat s in listOfGames)
+            foreach (var s in scores)
             {
-                listOfScores.Add(s.Score);
+                    listOfScores.Add(s.ScoreStat!.Score);
             }
-
-            
-            
+            int score = listOfScores.First();
             return (int)listOfScores.Average();
         }
         //TODO:Test
         public int GetAverageTime(DateWord word)
         {
             var scores = _context.DateWords
-                .Where(x => x == word)
                     .Include(x => x.Games)
                     .ThenInclude(x => x.ScoreStat)
-                    .ThenInclude(x => x!.Seconds);
+                    .Where(x => x.DateWordId == word.DateWordId)
+                    .SelectMany(x => x.Games).ToList();
 
-            var listOfGames = scores.Select(x => x.Games).ToList();
+            
             List<int> listOfScores = new();
 
-            foreach (ScoreStat s in listOfGames)
+            foreach (var s in scores)
             {
-                listOfScores.Add(s.Seconds);
+                listOfScores.Add(s.ScoreStat!.Seconds);
             }
 
 

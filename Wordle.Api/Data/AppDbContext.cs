@@ -20,10 +20,7 @@ namespace Wordle.Api.Data
             //new GameConfiguration().Configure(modelBuilder.Entity<Game>());
             //new WordConfiguration().Configure(modelBuilder.Entity<Word>());
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            modelBuilder.Entity<Game>()
-            .HasOne(a => a.ScoreStat)
-            .WithOne(a => a.Game)
-            .HasForeignKey<Game>(g => g.ScoreStatId);
+            
         }
     }        
 }

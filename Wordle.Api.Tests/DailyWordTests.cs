@@ -64,28 +64,34 @@ public class DailyWordTests : DatabaseBaseTests
         context.SaveChanges();
         var player = context.Players.First(x => x.Name == "Gunther");
         var word = context.Words.First();
-        context.Games.Add(new Data.Game()
+        context.SaveChanges();
+        context.ScoreStats.Add(new Data.ScoreStat()
         {
-            GameId = 1,
-            PlayerId = 3,
-            WordId = 1,
-            DateEnded = new DateTime(2020, 1, 1),
-            ScoreStat =  new Data.ScoreStat()
-            {
-                Score = 5,
-                Seconds = 60,
-                GameId = 1
-            }
+            Score = 4,
+            Seconds = 60,
+            
         });
         context.SaveChanges();
-        var game = context.Games.First();
+        var score = context.ScoreStats.First();
         context.DateWords.Add(new Data.DateWord()
         {
             Date = new DateTime(2020,1, 1),
             WordId = 1,
             TotalPlays = 1,
-            AverageGuesses = 1,
+            AverageGuesses = 4,
             AverageSeconds = 60
+
+        });
+        context.SaveChanges();
+        var dateWord = context.DateWords.First();
+        context.Games.Add(new Data.Game()
+        {
+
+            Player = player,
+            WordId = 1,
+            DateEnded = new DateTime(2020, 1, 1),
+            ScoreStatId = score.ScoreStatId,
+            DateWord = dateWord
 
         });
         context.SaveChanges();

@@ -12,8 +12,8 @@ using Wordle.Api.Data;
 namespace Wordle.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220522233901_ScoreStatHasGame")]
-    partial class ScoreStatHasGame
+    [Migration("20220526201923_GameHasDateWord")]
+    partial class GameHasDateWord
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -74,7 +74,7 @@ namespace Wordle.Api.Migrations
                     b.Property<int>("PlayerId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ScoreStatId")
+                    b.Property<int?>("ScoreStatId")
                         .HasColumnType("int");
 
                     b.Property<int>("WordId")
@@ -86,8 +86,7 @@ namespace Wordle.Api.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.HasIndex("ScoreStatId")
-                        .IsUnique();
+                    b.HasIndex("ScoreStatId");
 
                     b.HasIndex("WordId");
 
@@ -160,71 +159,15 @@ namespace Wordle.Api.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ScoreStatId"), 1L, 1);
 
-                    b.Property<int>("AverageSeconds")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Score")
                         .HasColumnType("int");
 
-                    b.Property<int>("TotalGames")
+                    b.Property<int>("Seconds")
                         .HasColumnType("int");
 
                     b.HasKey("ScoreStatId");
 
                     b.ToTable("ScoreStats");
-
-                    b.HasData(
-                        new
-                        {
-                            ScoreStatId = 1,
-                            AverageSeconds = 0,
-                            GameId = 0,
-                            Score = 1,
-                            TotalGames = 0
-                        },
-                        new
-                        {
-                            ScoreStatId = 2,
-                            AverageSeconds = 0,
-                            GameId = 0,
-                            Score = 2,
-                            TotalGames = 0
-                        },
-                        new
-                        {
-                            ScoreStatId = 3,
-                            AverageSeconds = 0,
-                            GameId = 0,
-                            Score = 3,
-                            TotalGames = 0
-                        },
-                        new
-                        {
-                            ScoreStatId = 4,
-                            AverageSeconds = 0,
-                            GameId = 0,
-                            Score = 4,
-                            TotalGames = 0
-                        },
-                        new
-                        {
-                            ScoreStatId = 5,
-                            AverageSeconds = 0,
-                            GameId = 0,
-                            Score = 5,
-                            TotalGames = 0
-                        },
-                        new
-                        {
-                            ScoreStatId = 6,
-                            AverageSeconds = 0,
-                            GameId = 0,
-                            Score = 6,
-                            TotalGames = 0
-                        });
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Word", b =>
@@ -300,10 +243,8 @@ namespace Wordle.Api.Migrations
                         .IsRequired();
 
                     b.HasOne("Wordle.Api.Data.ScoreStat", "ScoreStat")
-                        .WithOne("Game")
-                        .HasForeignKey("Wordle.Api.Data.Game", "ScoreStatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithMany()
+                        .HasForeignKey("ScoreStatId");
 
                     b.HasOne("Wordle.Api.Data.Word", "Word")
                         .WithMany()
@@ -351,12 +292,6 @@ namespace Wordle.Api.Migrations
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
                 {
                     b.Navigation("Games");
-                });
-
-            modelBuilder.Entity("Wordle.Api.Data.ScoreStat", b =>
-                {
-                    b.Navigation("Game")
-                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
