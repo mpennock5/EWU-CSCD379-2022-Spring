@@ -137,23 +137,12 @@ public class DateWordController : Controller
         }
     }
 
-    [Route("[action]")]
-    [HttpGet]
-    public string? GetDatewordByDate(int year, int month, int day)
-    {
-        //Sanitize the date by dropping time data
-        DateTime date = new DateTime(year, month, day);
-        string x = _dateWordService.getDTObyDate(date, "guest");
-
-        return x;
-    }
-
     [HttpPost]
     public IActionResult Post([FromBody] GameDetails gameDetails)
     {
         if (gameDetails == null ||
             gameDetails.Date == null ||
-            gameDetails.Player == null || 
+            gameDetails.Player == null ||
             gameDetails.Score < 1 ||
             gameDetails.Score > 6 ||
             gameDetails.TimeSeconds < 1)
@@ -161,11 +150,16 @@ public class DateWordController : Controller
             return BadRequest();
         }
 
-        //how is the PlayerPost being created and how to you validate its input?
-        //_service.Update(player.Name ?? "Guest", player.Attempts, player.Seconds);
-        //return Ok();
+        bool request = _dateWordService.submitGame(gameDetails.Date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds);
 
-        return Ok();
+        if (request)
+        {
+            return Ok();
+        }
+        else
+        {
+            return BadRequest();
+        }
     }
 
     public class GameDetails
