@@ -11,21 +11,31 @@
         <v-simple-table>
           <thead>
             <tr>
-              <th>Name</th>
-              <th style="text-align: center"># Games</th>
-              <th style="text-align: center">Avg. Attempts</th>
-              <th style="text-align: center">Avg. Seconds</th>
+              <th style="text-align: center">Date</th>
+              <th style="text-align: center">Total Plays</th>
+              <th style="text-align: center">Avg. Score</th>
+              <th style="text-align: center">Avg. Time</th>
+              <th style="text-align: center">Already Played?</th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(player, playerId) in players" :key="playerId">
-              <td>{{ player.name }}</td>
-              <td style="text-align: center">{{ player.gameCount }}</td>
+            <tr v-for="(game, date) in returnData" :key="date">
+              <td>{{ game.date }}</td>
+
               <td style="text-align: center">
-                {{ player.averageAttempts.toFixed(2) }}
+                {{ game.totalPlays }}
               </td>
+
               <td style="text-align: center">
-                {{ player.averageSecondsPerGame }}
+                {{ game.averageScore }}
+              </td>
+
+              <td style="text-align: center">
+                {{ game.averageTime }}
+              </td>
+
+              <td style="text-align: center">
+                {{ game.hasPlayed }}
               </td>
             </tr>
           </tbody>
@@ -33,10 +43,8 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="primary" @click="getAllPlayers"> Get All Players </v-btn>
-        <v-spacer />
-        <v-btn color="primary" @click="getTop10Players">
-          Get Top 10 Players
+        <v-btn color="primary" @click="GetLast10DailyWords">
+          Get recent Words
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -48,25 +56,22 @@ import { Component, Vue } from 'vue-property-decorator'
 
 @Component({})
 export default class leaderboard extends Vue {
-  players: any = []
+  returnData: any = []
   title: string = ''
 
   created() {
-    this.getTop10Players()
+    this.GetLast10DailyWords()
   }
 
-  getAllPlayers() {
-    this.title = 'All Players'
-    this.$axios.get('/api/Players').then((response) => {
-      this.players = response.data
-    })
-  }
-
-  getTop10Players() {
-    this.title = 'Top 10 Players'
-    this.$axios.get('/api/Players/GetTop10').then((response) => {
-      this.players = response.data
-    })
+  GetLast10DailyWords() {
+    this.title = 'Previous Games!'
+    this.$axios
+      .get('/api/DateWord/GetLast10DailyWords', {
+        params: { name: localStorage.getItem('userName') },
+      })
+      .then((response) => {
+        this.returnData = response.data
+      })
   }
 }
 </script>
