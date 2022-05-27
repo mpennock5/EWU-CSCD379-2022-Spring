@@ -4,9 +4,31 @@
 
 namespace Wordle.Api.Migrations
 {
-    public partial class WordListCsv : Migration
+    public partial class GameDateWordNull : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
+        {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Games_DateWords_DateWordId",
+                table: "Games");
+
+            migrationBuilder.AlterColumn<int>(
+                name: "DateWordId",
+                table: "Games",
+                type: "int",
+                nullable: true,
+                oldClrType: typeof(int),
+                oldType: "int");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Games_DateWords_DateWordId",
+                table: "Games",
+                column: "DateWordId",
+                principalTable: "DateWords",
+                principalColumn: "DateWordId");
+        }
+
+        protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Games_DateWords_DateWordId",
@@ -29,28 +51,6 @@ namespace Wordle.Api.Migrations
                 principalTable: "DateWords",
                 principalColumn: "DateWordId",
                 onDelete: ReferentialAction.Cascade);
-        }
-
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Games_DateWords_DateWordId",
-                table: "Games");
-
-            migrationBuilder.AlterColumn<int>(
-                name: "DateWordId",
-                table: "Games",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Games_DateWords_DateWordId",
-                table: "Games",
-                column: "DateWordId",
-                principalTable: "DateWords",
-                principalColumn: "DateWordId");
         }
     }
 }
