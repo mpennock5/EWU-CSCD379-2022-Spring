@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wordle.Api.Data;
 
@@ -11,9 +12,10 @@ using Wordle.Api.Data;
 namespace Wordle.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220527223628_WordListCsv")]
+    partial class WordListCsv
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -66,7 +68,7 @@ namespace Wordle.Api.Migrations
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("DateWordId")
+                    b.Property<int>("DateWordId")
                         .HasColumnType("int");
 
                     b.Property<int>("PlayerId")
@@ -224,7 +226,9 @@ namespace Wordle.Api.Migrations
                 {
                     b.HasOne("Wordle.Api.Data.DateWord", "DateWord")
                         .WithMany("Games")
-                        .HasForeignKey("DateWordId");
+                        .HasForeignKey("DateWordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Wordle.Api.Data.Player", "Player")
                         .WithMany("Games")

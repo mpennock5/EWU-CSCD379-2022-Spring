@@ -14,13 +14,20 @@ namespace Wordle.Api.Data
         public DbSet<Word> Words => Set<Word>();
         public DbSet<Game> Games => Set<Game>();
         public DbSet<DateWord> DateWords => Set<DateWord>();
+        public DbSet<Setting> Settings => Set<Setting>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //new GameConfiguration().Configure(modelBuilder.Entity<Game>());
             //new WordConfiguration().Configure(modelBuilder.Entity<Word>());
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
-            
+            //modelBuilder.Entity<Game>()
+            //    .HasOne(x => x.DateWord)
+            //    .WithMany()
+            //    .OnDelete(DeleteBehavior.Restrict);
+
+
+
         }
     }        
 }
