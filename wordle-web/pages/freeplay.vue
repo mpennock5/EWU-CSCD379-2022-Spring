@@ -134,9 +134,9 @@ export default class DailyGame extends Vue {
   }
 
   resetGame() {
-    localStorage.setItem('Year', "")
-    localStorage.setItem('Month', "")
-    localStorage.setItem('Day', "")
+    localStorage.setItem('Year', '')
+    localStorage.setItem('Month', '')
+    localStorage.setItem('Day', '')
     this.freeplayLinkCheck()
     this.timeInSeconds = 0
     this.startTimer()
@@ -275,9 +275,9 @@ export default class DailyGame extends Vue {
       .get<string>('/api/DateWord/GetWordByDate', {
         params: {
           // 1008 total possible days here
-          Year: localStorage.getItem('Year'),
-          Month: localStorage.getItem('Month'),
-          Day: localStorage.getItem('Day'),
+          Year: parseInt(localStorage.getItem('Year')!,10),
+          Month: parseInt(localStorage.getItem('Month')!,10),
+          Day: parseInt(localStorage.getItem('Day')!,10),
         },
       })
       .then((response) => {
