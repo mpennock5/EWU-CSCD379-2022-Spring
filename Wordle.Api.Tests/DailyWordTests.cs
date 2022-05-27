@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using Wordle.Api.Controllers;
 using Wordle.Api.Data;
 using Wordle.Api.Dtos;
 using Wordle.Api.Services;
+using static Wordle.Api.Controllers.DateWordController;
 
 namespace Wordle.Api.Tests;
 [TestClass]
@@ -48,13 +50,30 @@ public class DailyWordTests : DatabaseBaseTests
     }
 
     [TestMethod]
-    public void PostGame()
+    public void SubmitGame()
     {
         using var context = new TestAppDbContext(Options);
         DateWordService sut = new(context);
         DateTime date = new DateTime(2022, 5, 26);
         bool plswork = sut.SubmitGame(date.Date, "Gunther", 5, 45);
         Assert.IsTrue(plswork);
+    }
+
+    [TestMethod]
+    public void DateWordControllerPost()
+    {
+        using var context = new TestAppDbContext(Options);
+        DateWordController sut = new(context, new Services.GameService(context), new Services.DateWordService(context));
+        GameDetails gameDetails = new(){
+            Year = 2022,
+            Month = 05,
+            Day = 26,
+            Player = "Dakota",
+            Score = 5,
+            TimeSeconds = 45
+        };
+        IActionResult result = sut.Post(gameDetails);
+        Assert.IsNotNull(result);
     }
 
     [TestInitialize]
