@@ -53,7 +53,7 @@ public class DailyWordTests : DatabaseBaseTests
         using var context = new TestAppDbContext(Options);
         DateWordService sut = new(context);
         DateTime date = new DateTime(2022, 5, 26);
-        bool plswork = sut.submitGame(date.Date, "Gunther", 5, 45);
+        bool plswork = sut.SubmitGame(date.Date, "Gunther", 5, 45);
         Assert.IsTrue(plswork);
     }
 
