@@ -77,7 +77,8 @@
       </v-row>
 
       <v-row justify="center">
-        <p><v-icon>mdi-timer</v-icon> {{ displayTimer() }}</p>
+        <v-icon>mdi-timer</v-icon>
+        <div v-text="timeField"></div>
       </v-row>
 
       <v-row justify="center">
@@ -103,8 +104,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
-import { WordsService } from '~/scripts/wordsService'
+import { Component, Vue, Watch } from 'vue-property-decorator'
+import { Stopwatch } from 'ts-stopwatch'
 import { GameState, WordleGame } from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
@@ -115,22 +116,57 @@ export default class DailyGame extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
-  timeInSeconds: number = 0
-  startTime: number = 0
-  endTime: number = 0
-  intervalID: any
+  timeField: string = '1'
   word: string = 'abcde'
   wordleGame: WordleGame = new WordleGame(this.word!)
   isLoaded: boolean = false
+  stopwatch = new Stopwatch()
 
   mounted() {
+    this.startTime()
+    this.showTime()
     setTimeout(() => {
       this.isLoaded = true
-      // this.word = this.getWordToday()
       console.log('on mount word = ' + this.word)
     }, 500)
     this.retrieveUserName()
-    setTimeout(() => this.startTimer(), 500) // delay is because of ad loading
+  }
+  startTime() {
+    this.stopwatch.start()
+  }
+  stopTime() {
+    this.stopwatch.stop()
+  }
+  getTime() {
+    return this.stopwatch.getTime()
+  }
+  showTime() {
+    this.timeField = this.formatTime()
+    setTimeout(() => {
+      this.showTime()
+    }, 50)
+  }
+  resetTime() {
+    this.stopwatch.reset()
+  }
+  getTimeSeconds() {
+    return this.stopwatch.getTime() / 1000
+  }
+
+  formatTime(): string {
+    let time = this.stopwatch.getTime()
+    // let ftms = ((time % 1000) / 10).toFixed(0)
+    let fts = Math.floor((time / 1000) % 60)
+    let ftm = Math.floor((time / (1000 * 60)) % 60)
+    let fth = Math.floor((time / (1000 * 60 * 60)) % 24)
+
+    let Shours = fth < 10 ? '0' + fth : fth
+    let Sminutes = ftm < 10 ? '0' + ftm : ftm
+    let Sseconds = fts < 10 ? '0' + fts : fts
+
+    let text = Shours + ':' + Sminutes + ':' + Sseconds //+ ':' + ftms
+    return text
+    //adding milliseconds makes the timer bounce around on the page
   }
 
   resetGame() {
@@ -138,8 +174,8 @@ export default class DailyGame extends Vue {
     localStorage.setItem('Month', '')
     localStorage.setItem('Day', '')
     this.freeplayLinkCheck()
-    this.timeInSeconds = 0
-    this.startTimer()
+    this.resetTime()
+    this.startTime()
   }
   freeplayLinkCheck() {
     const year = localStorage.getItem('Year')
@@ -161,9 +197,8 @@ export default class DailyGame extends Vue {
   }
 
   get gameResult() {
-    this.stopTimer()
-    this.timeInSeconds = Math.floor(this.endTime - this.startTime)
     if (this.wordleGame.state === GameState.Won) {
+      this.stopTime()
       if (
         this.playerName.toLocaleLowerCase() !== 'guest' &&
         this.playerName !== ''
@@ -175,6 +210,7 @@ export default class DailyGame extends Vue {
       return { type: 'success', text: 'You won! :^)' }
     }
     if (this.wordleGame.state === GameState.Lost) {
+      this.stopTime()
       return {
         type: 'error',
         text: `You lost... :^( The word was ${this.word}`,
@@ -207,38 +243,24 @@ export default class DailyGame extends Vue {
     }
   }
 
-  startTimer() {
-    this.startTime = Date.now() / 1000
-    this.intervalID = setInterval(this.updateTimer, 1000)
-  }
-
-  updateTimer() {
-    this.timeInSeconds = Math.floor(Date.now() / 1000 - this.startTime)
-  }
-
-  stopTimer() {
-    this.endTime = Date.now() / 1000
-    clearInterval(this.intervalID)
-  }
-
-  displayTimer() {
-    let text = `${
-      this.timeInSeconds / 60 / 60 > 1
-        ? Math.floor(this.timeInSeconds / 60 / 60) + ':'
-        : ''
-    }`
-    text += `${
-      Math.floor((this.timeInSeconds / 60) % 60) < 10
-        ? '0' + Math.floor((this.timeInSeconds / 60) % 60)
-        : Math.floor((this.timeInSeconds / 60) % 60)
-    }:`
-    text += `${
-      Math.floor(this.timeInSeconds % 60) < 10
-        ? '0' + Math.floor(this.timeInSeconds % 60)
-        : Math.floor(this.timeInSeconds % 60)
-    }`
-    return text
-  }
+  // displayTimer() {
+  //   let text = `${
+  //     this.getTimeSeconds() / 60 / 60 > 1
+  //       ? Math.floor(this.getTimeSeconds() / 60 / 60) + ':'
+  //       : ''
+  //   }`
+  //   text += `${
+  //     Math.floor((this.getTimeSeconds() / 60) % 60) < 10
+  //       ? '0' + Math.floor((this.getTimeSeconds() / 60) % 60)
+  //       : Math.floor((this.getTimeSeconds() / 60) % 60)
+  //   }:`
+  //   text += `${
+  //     Math.floor(this.getTimeSeconds() % 60) < 10
+  //       ? '0' + Math.floor(this.getTimeSeconds() % 60)
+  //       : Math.floor(this.getTimeSeconds() % 60)
+  //   }`
+  //   return text
+  // }
 
   // public class GameDetails
   //   {
@@ -254,9 +276,9 @@ export default class DailyGame extends Vue {
       Year: localStorage.getItem('Year'),
       Month: localStorage.getItem('Month'),
       Day: localStorage.getItem('Day'),
-      Player : localStorage.getItem('userName'),
-      Score : this.wordleGame.words.length,
-      TimeSeconds : this.timeInSeconds,
+      Player: localStorage.getItem('userName'),
+      Score: this.wordleGame.words.length,
+      TimeSeconds: Math.floor(this.getTimeSeconds()),
     })
   }
 
@@ -274,10 +296,9 @@ export default class DailyGame extends Vue {
     this.$axios
       .get<string>('/api/DateWord/GetWordByDate', {
         params: {
-          // 1008 total possible days here
-          Year: parseInt(localStorage.getItem('Year')!,10),
-          Month: parseInt(localStorage.getItem('Month')!,10),
-          Day: parseInt(localStorage.getItem('Day')!,10),
+          Year: parseInt(localStorage.getItem('Year')!, 10),
+          Month: parseInt(localStorage.getItem('Month')!, 10),
+          Day: parseInt(localStorage.getItem('Day')!, 10),
         },
       })
       .then((response) => {

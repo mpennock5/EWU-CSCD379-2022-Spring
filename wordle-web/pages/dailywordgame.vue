@@ -77,13 +77,20 @@
       </v-row>
 
       <v-row justify="center">
-        <p><v-icon>mdi-timer</v-icon> {{ displayTimer() }}</p>
+        <v-icon>mdi-timer</v-icon>
+        <div v-text="timeField"></div>
       </v-row>
 
-      <v-row justify="center" >
-        <v-alert v-if="wordleGame.gameOver" width="20rem" :type="gameResult.type">
+      <v-row justify="center">
+        <v-alert
+          v-if="wordleGame.gameOver"
+          width="20rem"
+          :type="gameResult.type"
+        >
           {{ gameResult.text }}
-          <v-btn class="ml-2" color="primary" nuxt to="/freeplay"> Go To Freeplay? </v-btn>
+          <v-btn class="ml-2" color="primary" nuxt to="/freeplay">
+            Go To Freeplay?
+          </v-btn>
         </v-alert>
       </v-row>
 
@@ -105,34 +112,68 @@ import { GameState, WordleGame } from '~/scripts/wordleGame'
 import KeyBoard from '@/components/keyboard.vue'
 import GameBoard from '@/components/game-board.vue'
 import { Word } from '~/scripts/word'
+import { Stopwatch } from 'ts-stopwatch'
 
 @Component({ components: { KeyBoard, GameBoard } })
 export default class DailyGame extends Vue {
   // ? need this for closing button
   dialog: boolean = false
   playerName: string = ''
-  timeInSeconds: number = 0
-  startTime: number = 0
-  endTime: number = 0
-  intervalID: any
+  timeField: string = '1'
   word: string = 'abcde'
   wordleGame: WordleGame = new WordleGame(this.word!)
   isLoaded: boolean = false
+  stopwatch = new Stopwatch()
 
   mounted() {
+    this.startTime()
+    this.showTime()
     setTimeout(() => {
       this.isLoaded = true
-      // this.word = this.getWordToday()
-      console.log('on mount word = ' + this.word)
     }, 500)
     this.retrieveUserName()
-    setTimeout(() => this.startTimer(), 500) // delay is because of ad loading
+  }
+  startTime() {
+    this.stopwatch.start()
+  }
+  stopTime() {
+    this.stopwatch.stop()
+  }
+  getTime() {
+    return this.stopwatch.getTime()
+  }
+  showTime() {
+    this.timeField = this.formatTime()
+    setTimeout(() => {
+      this.showTime()
+    }, 50)
+  }
+  resetTime() {
+    this.stopwatch.reset()
+  }
+  getTimeSeconds() {
+    return this.stopwatch.getTime() / 1000
+  }
+
+  formatTime(): string {
+    let time = this.stopwatch.getTime()
+    // let ftms = ((time % 1000) / 10).toFixed(0)
+    let fts = Math.floor((time / 1000) % 60)
+    let ftm = Math.floor((time / (1000 * 60)) % 60)
+    let fth = Math.floor((time / (1000 * 60 * 60)) % 24)
+
+    let Shours = fth < 10 ? '0' + fth : fth
+    let Sminutes = ftm < 10 ? '0' + ftm : ftm
+    let Sseconds = fts < 10 ? '0' + fts : fts
+
+    let text = Shours + ':' + Sminutes + ':' + Sseconds //+ ':' + ftms
+    return text
+    //adding milliseconds makes the timer bounce around on the page
   }
 
   get gameResult() {
-    this.stopTimer()
-    this.timeInSeconds = Math.floor(this.endTime - this.startTime)
     if (this.wordleGame.state === GameState.Won) {
+      this.stopTime()
       if (
         this.playerName.toLocaleLowerCase() !== 'guest' &&
         this.playerName !== ''
@@ -144,6 +185,7 @@ export default class DailyGame extends Vue {
       return { type: 'success', text: 'You won! :^)' }
     }
     if (this.wordleGame.state === GameState.Lost) {
+      this.stopTime()
       return {
         type: 'error',
         text: `You lost... :^( The word was ${this.word}`,
@@ -176,46 +218,18 @@ export default class DailyGame extends Vue {
     }
   }
 
-  startTimer() {
-    this.startTime = Date.now() / 1000
-    this.intervalID = setInterval(this.updateTimer, 1000)
-  }
-
-  updateTimer() {
-    this.timeInSeconds = Math.floor(Date.now() / 1000 - this.startTime)
-  }
-
-  stopTimer() {
-    this.endTime = Date.now() / 1000
-    clearInterval(this.intervalID)
-  }
-
-  displayTimer() {
-    let text = `${
-      this.timeInSeconds / 60 / 60 > 1
-        ? Math.floor(this.timeInSeconds / 60 / 60) + ':'
-        : ''
-    }`
-    text += `${
-      Math.floor((this.timeInSeconds / 60) % 60) < 10
-        ? '0' + Math.floor((this.timeInSeconds / 60) % 60)
-        : Math.floor((this.timeInSeconds / 60) % 60)
-    }:`
-    text += `${
-      Math.floor(this.timeInSeconds % 60) < 10
-        ? '0' + Math.floor(this.timeInSeconds % 60)
-        : Math.floor(this.timeInSeconds % 60)
-    }`
-    return text
-  }
-
   endGameSave() {
-    this.$axios.post('/api/Players', {
-      name: this.playerName,
-      attempts: this.wordleGame.words.length,
-      seconds: this.timeInSeconds,
+    let today = new Date()
+    this.$axios.post('/api/DateWord/Post', {
+      Year: today.getFullYear(),
+      Month: today.getMonth() + 1,
+      Day: today.getDate(),
+      Player: localStorage.getItem('userName'),
+      Score: this.wordleGame.words.length,
+      TimeSeconds: Math.floor(this.getTimeSeconds()),
     })
   }
+
   getDailyWord() {
     let today = new Date()
     let tempString = 'blank'
@@ -229,7 +243,6 @@ export default class DailyGame extends Vue {
       })
       .then((response) => {
         tempString = response.data
-        console.log('tempString in .then: ' + tempString)
         this.word = response.data
         this.wordleGame = new WordleGame(response.data)
         return response.data

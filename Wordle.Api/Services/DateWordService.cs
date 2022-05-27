@@ -18,7 +18,7 @@ namespace Wordle.Api.Services
         {
             IEnumerable<DateWord> words;
             List<DailyWordStatDto> lastTen = new();
-
+            int maxReturedWords = 10;
             int wordCount = _context.DateWords.Count();
             if (wordCount > 9)
             {
@@ -26,11 +26,16 @@ namespace Wordle.Api.Services
             }
             else
             {
-                words = _context.DateWords.OrderBy(x => x.Date).Take(wordCount);
+                words = _context.DateWords.OrderBy(x => x.Date).Take(maxReturedWords);
             }
 
-            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
-            var games = player.Games.Select(x => x.DateStarted).ToList();
+            var player = _context.Players.Include(x => x.Games).FirstOrDefault(x => x.Name == name);
+
+            // this doesnt do anything?
+            //if (player is not null)
+            //{
+            //    var games = player.Games.Select(x => x.DateStarted).ToList();
+            //}
 
             foreach (var word in words)
             {
@@ -48,8 +53,8 @@ namespace Wordle.Api.Services
             {
                 return false;
             }
-            var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
-
+            var player = _context.Players.Include(x => x.Games).FirstOrDefault(x => x.Name == name);
+            if (player is null) return false;
             foreach (var g in player.Games)
             {
                 if (g.DateWordId == word.DateWordId)
@@ -95,7 +100,7 @@ namespace Wordle.Api.Services
             if (listOfScores.Count() > 0)
             {
                 return (int)listOfScores.Average();
-            } 
+            }
             else
             {
                 return 0;
@@ -214,11 +219,9 @@ namespace Wordle.Api.Services
             }
             catch (Exception)
             {
-                // catchall for exceptions resulting in savechanges not occouring
-                // meaning function does not process and result is false 
                 return false;
             }
         }
-        
+
     }
 }
