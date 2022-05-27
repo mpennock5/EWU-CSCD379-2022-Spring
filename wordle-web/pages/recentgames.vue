@@ -2,7 +2,7 @@
   <v-container fluid fill-height justify-center>
     <v-card>
       <v-card-title class="display-3 justify-center">
-        Leader Board
+        Recent Games
       </v-card-title>
       <v-card-text class="text-center">
         {{ title }}
@@ -19,8 +19,8 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(game, date) in returnData" :key="date">
-              <td>{{ game.date }}</td>
+            <tr v-for="(game, date) in returnData" :key="date" @click="linkTo(game.date)">
+              <td>{{ displayDate(game.date) }}</td>
 
               <td style="text-align: center">
                 {{ game.totalPlays }}
@@ -63,8 +63,25 @@ export default class leaderboard extends Vue {
     this.GetLast10DailyWords()
   }
 
+  linkTo(date: any){
+    let convertedDate = this.convertDate(date)
+    localStorage.setItem('Year', convertedDate.getFullYear().toString())
+    localStorage.setItem('Month', (convertedDate.getMonth() + 1).toString())
+    localStorage.setItem('Day', convertedDate.getDate().toString())
+    this.$router.push({ name: 'freeplay' })
+  }
+  convertDate(date: any){
+    let d = new Date(date)
+    return d
+  }
+
+  displayDate(date: any){
+    let d = this.convertDate(date)
+    return d.toLocaleDateString("en-US")
+  }
+
   GetLast10DailyWords() {
-    this.title = 'Previous Games!'
+    this.title = 'Click a day below to play that game'
     this.$axios
       .get('/api/DateWord/GetLast10DailyWords', {
         params: { name: localStorage.getItem('userName') },

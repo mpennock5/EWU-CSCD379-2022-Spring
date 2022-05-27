@@ -64,10 +64,10 @@
         </v-list-item>
 
         <v-list-item>
-          <v-btn text block nuxt to="/previousdays">
+          <v-btn text block nuxt to="/recentgames">
             <v-icon>mdi-equalizer</v-icon>
             <v-spacer></v-spacer>
-            Hindsight 10
+            Recent Games
           </v-btn>
         </v-list-item>
 

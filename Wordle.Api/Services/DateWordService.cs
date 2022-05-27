@@ -22,7 +22,7 @@ namespace Wordle.Api.Services
             int wordCount = _context.DateWords.Count();
             if (wordCount > 9)
             {
-                words = _context.DateWords.OrderBy(x => x.Date).Take(10);
+                words = _context.DateWords.OrderByDescending(x => x.Date).Take(10);
             }
             else
             {
@@ -30,12 +30,6 @@ namespace Wordle.Api.Services
             }
 
             var player = _context.Players.Include(x => x.Games).FirstOrDefault(x => x.Name == name);
-
-            // this doesnt do anything?
-            //if (player is not null)
-            //{
-            //    var games = player.Games.Select(x => x.DateStarted).ToList();
-            //}
 
             foreach (var word in words)
             {

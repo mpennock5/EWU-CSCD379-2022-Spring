@@ -78,7 +78,7 @@
 
       <v-row justify="center">
         <v-icon>mdi-timer</v-icon>
-        <div v-text="timeField"></div>
+        <div v-text="timeField" class="mt-1 ml-1"></div>
       </v-row>
 
       <v-row justify="center">
