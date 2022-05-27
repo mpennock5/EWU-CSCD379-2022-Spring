@@ -160,7 +160,7 @@ public class DateWordController : Controller
             return BadRequest();
         }
 
-        bool request = _dateWordService.submitGame(date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds);
+        bool request = _dateWordService.SubmitGame(date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds);
 
         if (request)
         {
