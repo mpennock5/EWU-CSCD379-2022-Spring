@@ -250,7 +250,7 @@ export default class DailyGame extends Vue {
   // public int TimeSeconds { get; set; }
   //   }
   endGameSave() {
-    this.$axios.post('/api/Players', {
+    this.$axios.post('/api/DateWord/Post', {
       Year: localStorage.getItem('Year'),
       Month: localStorage.getItem('Month'),
       Day: localStorage.getItem('Day'),
