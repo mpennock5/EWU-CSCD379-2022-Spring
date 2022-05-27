@@ -134,9 +134,30 @@ export default class DailyGame extends Vue {
   }
 
   resetGame() {
-    this.getRandomWord()
+    localStorage.setItem('Year', "")
+    localStorage.setItem('Month', "")
+    localStorage.setItem('Day', "")
+    this.freeplayLinkCheck()
     this.timeInSeconds = 0
     this.startTimer()
+  }
+  freeplayLinkCheck() {
+    const year = localStorage.getItem('Year')
+    const month = localStorage.getItem('Month')
+    const day = localStorage.getItem('Day')
+    if (year == '' || month == '' || day == '') {
+      this.freeplayRandomizeDate()
+    }
+    this.getWordbyDateFromLocalStorage()
+  }
+
+  freeplayRandomizeDate() {
+    const maxDate = Date.now()
+    const timestamp = Math.floor(Math.random() * maxDate)
+    const randomDate = new Date(timestamp)
+    localStorage.setItem('Year', randomDate.getFullYear().toString())
+    localStorage.setItem('Month', (randomDate.getMonth() + 1).toString())
+    localStorage.setItem('Day', randomDate.getDate().toString())
   }
 
   get gameResult() {
@@ -219,23 +240,44 @@ export default class DailyGame extends Vue {
     return text
   }
 
+  // public class GameDetails
+  //   {
+  // public int Year { get; set; }
+  // public int Month { get; set; }
+  // public int Day { get; set; }
+  // public string Player { get; set; } = null!;
+  // public int Score { get; set; }
+  // public int TimeSeconds { get; set; }
+  //   }
   endGameSave() {
     this.$axios.post('/api/Players', {
-      name: this.playerName,
-      attempts: this.wordleGame.words.length,
-      seconds: this.timeInSeconds,
+      Year: localStorage.getItem('Year'),
+      Month: localStorage.getItem('Month'),
+      Day: localStorage.getItem('Day'),
+      Player : localStorage.getItem('userName'),
+      Score : this.wordleGame.words.length,
+      TimeSeconds : this.timeInSeconds,
     })
   }
 
-  getRandomWord() {
+  // previous version
+  // endGameSave() {
+  //   this.$axios.post('/api/Players', {
+  //     name: this.playerName,
+  //     attempts: this.wordleGame.words.length,
+  //     seconds: this.timeInSeconds,
+  //   })
+  // }
+
+  getWordbyDateFromLocalStorage() {
     let tempString = 'blank'
     this.$axios
       .get<string>('/api/DateWord/GetWordByDate', {
         params: {
-            // 1008 total possible days here
-          year: this.getRandomInt(2021,2023),
-          month: this.getRandomInt(1,12),
-          day: this.getRandomInt(1,28),
+          // 1008 total possible days here
+          Year: localStorage.getItem('Year'),
+          Month: localStorage.getItem('Month'),
+          Day: localStorage.getItem('Day'),
         },
       })
       .then((response) => {
@@ -248,7 +290,7 @@ export default class DailyGame extends Vue {
   }
 
   beforeMount() {
-    this.getRandomWord()
+    this.freeplayLinkCheck()
   }
 
   getRandomInt(min: number, max: number): number {
