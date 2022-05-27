@@ -87,10 +87,19 @@ namespace Wordle.Api.Services
 
             foreach (var s in scores)
             {
-                listOfScores.Add(s.ScoreStat!.Score);
+                if (s.ScoreStat is not null)
+                {
+                    listOfScores.Add(s.ScoreStat!.Score);
+                }
             }
-            int score = listOfScores.First();
-            return (int)listOfScores.Average();
+            if (listOfScores.Count() > 0)
+            {
+                return (int)listOfScores.Average();
+            } 
+            else
+            {
+                return 0;
+            }
         }
         //TODO:Test
         public int GetAverageTime(DateWord word)
@@ -106,10 +115,20 @@ namespace Wordle.Api.Services
 
             foreach (var s in scores)
             {
-                listOfScores.Add(s.ScoreStat!.Seconds);
+                if (s.ScoreStat is not null)
+                {
+                    listOfScores.Add(s.ScoreStat!.Seconds);
+                }
             }
 
-            return (int)listOfScores.Average();
+            if (listOfScores.Count() > 0)
+            {
+                return (int)listOfScores.Average();
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         public bool submitGame(DateTime date, string username, int score, int timeSeconds)
@@ -181,8 +200,7 @@ namespace Wordle.Api.Services
                 };
 
                 // attach game to DateWord and Player
-                currentDateWord.Games.Add(submittedGame);
-                currentPlayer.Games.Add(submittedGame);
+                _context.Games.Add(submittedGame);
 
                 // make sure save goes through (NOT async) before returning result
                 _context.SaveChanges();

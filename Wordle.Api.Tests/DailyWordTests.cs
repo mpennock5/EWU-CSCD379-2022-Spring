@@ -5,7 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wordle.Api.Controllers;
+using Wordle.Api.Data;
 using Wordle.Api.Dtos;
+using Wordle.Api.Services;
 
 namespace Wordle.Api.Tests;
 [TestClass]
@@ -43,6 +45,16 @@ public class DailyWordTests : DatabaseBaseTests
         DateWordController sut = new(context, new Services.GameService(context), new Services.DateWordService(context));
         IEnumerable<DailyWordStatDto> dailyWords = sut.GetLast10DailyWords("Gunther");
         Assert.IsNotNull(dailyWords);
+    }
+
+    [TestMethod]
+    public void PostGame()
+    {
+        using var context = new TestAppDbContext(Options);
+        DateWordService sut = new(context);
+        DateTime date = new DateTime(2022, 5, 26);
+        bool plswork = sut.submitGame(date.Date, "Gunther", 5, 45);
+        Assert.IsTrue(plswork);
     }
 
     [TestInitialize]
@@ -95,5 +107,27 @@ public class DailyWordTests : DatabaseBaseTests
 
         });
         context.SaveChanges();
+        context.DateWords.Add(new Data.DateWord()
+        {
+            Date = new DateTime(2022, 5, 26),
+            WordId = 3,
+            TotalPlays = 1,
+            AverageGuesses = 4,
+            AverageSeconds = 60
+
+        });
+        var date = new DateTime(2022, 5, 26);
+        context.SaveChanges();
+        //var dateWord2 = context.DateWords
+        //    .First(x => x.Date.Date == date.Date);
+        //context.Games.Add(new Data.Game()
+        //{
+
+        //    Player = player,
+        //    WordId = 3,
+        //    DateWord = dateWord2
+
+        //});
+        //context.SaveChanges();
     }
 }
