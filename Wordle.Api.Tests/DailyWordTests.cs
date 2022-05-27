@@ -19,10 +19,10 @@ public class DailyWordTests : DatabaseBaseTests
     public void GetDailyWord()
     {
         using var context = new TestAppDbContext(Options);
-        context.Words.Add(new Data.Word() { Value = "tests" });
-        context.Words.Add(new Data.Word() { Value = "zebra" });
-        context.Words.Add(new Data.Word() { Value = "hello" });
-        context.Words.Add(new Data.Word() { Value = "apple" });
+        context.Words.Add(new Data.Word() { Value = "tests", Common = true });
+        context.Words.Add(new Data.Word() { Value = "zebra", Common = true });
+        context.Words.Add(new Data.Word() { Value = "hello", Common = true });
+        context.Words.Add(new Data.Word() { Value = "apple", Common = true });
         context.Players.Add(new Data.Player() { Name = "Gunther" });
         var player = context.Players.First();
         context.Games.Add(new Data.Game() 
@@ -80,10 +80,10 @@ public class DailyWordTests : DatabaseBaseTests
     public void Setup()
     {
         using var context = new TestAppDbContext(Options);
-        context.Words.Add(new Data.Word() { Value = "tests" });
-        context.Words.Add(new Data.Word() { Value = "zebra" });
-        context.Words.Add(new Data.Word() { Value = "hello" });
-        context.Words.Add(new Data.Word() { Value = "apple" });
+        context.Words.Add(new Data.Word() { Value = "tests", Common = true });
+        context.Words.Add(new Data.Word() { Value = "zebra", Common = true });
+        context.Words.Add(new Data.Word() { Value = "hello", Common = true });
+        context.Words.Add(new Data.Word() { Value = "apple", Common = true });
         context.Players.Add(new Data.Player() 
         { 
             Name = "Gunther",

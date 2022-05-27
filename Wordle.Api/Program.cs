@@ -40,6 +40,7 @@ using (var scope = app.Services.CreateScope())
     context.Database.Migrate();
     //ScoreStatsService.Seed(context);
     PlayersService.Seed(context);
+    Word.SeedWords(context);
 }
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
