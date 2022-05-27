@@ -137,6 +137,7 @@ public class DateWordController : Controller
         }
     }
 
+    [Route("[action]")]
     [HttpPost]
     public IActionResult Post([FromBody] GameDetails gameDetails)
     {
