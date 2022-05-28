@@ -12,8 +12,8 @@ using Wordle.Api.Data;
 namespace Wordle.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220527223628_WordListCsv")]
-    partial class WordListCsv
+    [Migration("20220528014627_PleaseWork")]
+    partial class PleaseWork
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,7 +68,7 @@ namespace Wordle.Api.Migrations
                     b.Property<DateTime>("DateStarted")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("DateWordId")
+                    b.Property<int?>("DateWordId")
                         .HasColumnType("int");
 
                     b.Property<int>("PlayerId")
@@ -91,31 +91,6 @@ namespace Wordle.Api.Migrations
                     b.HasIndex("WordId");
 
                     b.ToTable("Games");
-                });
-
-            modelBuilder.Entity("Wordle.Api.Data.Guess", b =>
-                {
-                    b.Property<int>("GuessId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GuessId"), 1L, 1);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("GuessId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Guess");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
@@ -226,9 +201,7 @@ namespace Wordle.Api.Migrations
                 {
                     b.HasOne("Wordle.Api.Data.DateWord", "DateWord")
                         .WithMany("Games")
-                        .HasForeignKey("DateWordId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("DateWordId");
 
                     b.HasOne("Wordle.Api.Data.Player", "Player")
                         .WithMany("Games")
@@ -255,17 +228,6 @@ namespace Wordle.Api.Migrations
                     b.Navigation("Word");
                 });
 
-            modelBuilder.Entity("Wordle.Api.Data.Guess", b =>
-                {
-                    b.HasOne("Wordle.Api.Data.Game", "Game")
-                        .WithMany("Guesses")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
                 {
                     b.HasOne("Wordle.Api.Data.DateWord", null)
@@ -278,11 +240,6 @@ namespace Wordle.Api.Migrations
                     b.Navigation("Games");
 
                     b.Navigation("Players");
-                });
-
-            modelBuilder.Entity("Wordle.Api.Data.Game", b =>
-                {
-                    b.Navigation("Guesses");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>

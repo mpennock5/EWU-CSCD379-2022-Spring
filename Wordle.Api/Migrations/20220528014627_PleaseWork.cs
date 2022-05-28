@@ -1,16 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Wordle.Api.Migrations
 {
-    public partial class WordListCsv : Migration
+    public partial class PleaseWork : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Games_DateWords_DateWordId",
-                table: "Games");
+            migrationBuilder.DropTable(
+                name: "Guess");
 
             migrationBuilder.DeleteData(
                 table: "Words",
@@ -49,16 +49,6 @@ namespace Wordle.Api.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AlterColumn<int>(
-                name: "DateWordId",
-                table: "Games",
-                type: "int",
-                nullable: false,
-                defaultValue: 0,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
-
             migrationBuilder.CreateTable(
                 name: "Settings",
                 columns: table => new
@@ -72,22 +62,10 @@ namespace Wordle.Api.Migrations
                 {
                     table.PrimaryKey("PK_Settings", x => x.SettingId);
                 });
-
-            migrationBuilder.AddForeignKey(
-                name: "FK_Games_DateWords_DateWordId",
-                table: "Games",
-                column: "DateWordId",
-                principalTable: "DateWords",
-                principalColumn: "DateWordId",
-                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_Games_DateWords_DateWordId",
-                table: "Games");
-
             migrationBuilder.DropTable(
                 name: "Settings");
 
@@ -95,13 +73,26 @@ namespace Wordle.Api.Migrations
                 name: "Common",
                 table: "Words");
 
-            migrationBuilder.AlterColumn<int>(
-                name: "DateWordId",
-                table: "Games",
-                type: "int",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int");
+            migrationBuilder.CreateTable(
+                name: "Guess",
+                columns: table => new
+                {
+                    GuessId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Guess", x => x.GuessId);
+                    table.ForeignKey(
+                        name: "FK_Guess_Games_GameId",
+                        column: x => x.GameId,
+                        principalTable: "Games",
+                        principalColumn: "GameId",
+                        onDelete: ReferentialAction.Cascade);
+                });
 
             migrationBuilder.InsertData(
                 table: "Words",
@@ -116,12 +107,10 @@ namespace Wordle.Api.Migrations
                     { 6, "wrong" }
                 });
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_Games_DateWords_DateWordId",
-                table: "Games",
-                column: "DateWordId",
-                principalTable: "DateWords",
-                principalColumn: "DateWordId");
+            migrationBuilder.CreateIndex(
+                name: "IX_Guess_GameId",
+                table: "Guess",
+                column: "GameId");
         }
     }
 }

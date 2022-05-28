@@ -16,7 +16,6 @@ public class Game
     public DateWord? DateWord { get; set; } = null!;
     public int? ScoreStatId { get; set; }
     public ScoreStat? ScoreStat { get; set; }
-    public IList<Guess> Guesses { get; set; } = null!;
 }
 
 public class GameConfiguration : IEntityTypeConfiguration<Game>

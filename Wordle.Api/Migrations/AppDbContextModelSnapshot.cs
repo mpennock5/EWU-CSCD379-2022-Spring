@@ -91,31 +91,6 @@ namespace Wordle.Api.Migrations
                     b.ToTable("Games");
                 });
 
-            modelBuilder.Entity("Wordle.Api.Data.Guess", b =>
-                {
-                    b.Property<int>("GuessId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GuessId"), 1L, 1);
-
-                    b.Property<DateTime>("Date")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("GameId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("GuessId");
-
-                    b.HasIndex("GameId");
-
-                    b.ToTable("Guess");
-                });
-
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
                 {
                     b.Property<int>("PlayerId")
@@ -251,17 +226,6 @@ namespace Wordle.Api.Migrations
                     b.Navigation("Word");
                 });
 
-            modelBuilder.Entity("Wordle.Api.Data.Guess", b =>
-                {
-                    b.HasOne("Wordle.Api.Data.Game", "Game")
-                        .WithMany("Guesses")
-                        .HasForeignKey("GameId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Game");
-                });
-
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
                 {
                     b.HasOne("Wordle.Api.Data.DateWord", null)
@@ -274,11 +238,6 @@ namespace Wordle.Api.Migrations
                     b.Navigation("Games");
 
                     b.Navigation("Players");
-                });
-
-            modelBuilder.Entity("Wordle.Api.Data.Game", b =>
-                {
-                    b.Navigation("Guesses");
                 });
 
             modelBuilder.Entity("Wordle.Api.Data.Player", b =>
