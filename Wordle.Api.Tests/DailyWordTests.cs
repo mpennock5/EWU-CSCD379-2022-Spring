@@ -19,16 +19,7 @@ public class DailyWordTests : DatabaseBaseTests
     public void GetDailyWord()
     {
         using var context = new TestAppDbContext(Options);
-        context.Words.Add(new Data.Word() { Value = "tests", Common = true });
-        context.Words.Add(new Data.Word() { Value = "zebra", Common = true });
-        context.Words.Add(new Data.Word() { Value = "hello", Common = true });
-        context.Words.Add(new Data.Word() { Value = "apple", Common = true });
-        context.Players.Add(new Data.Player() { Name = "Gunther" });
-        var player = context.Players.First();
-        context.Games.Add(new Data.Game() 
-        { 
-            Player = player,
-        });
+        
         context.SaveChanges();
 
         DateWordController sut = new(context, new Services.GameService(context), new Services.DateWordService(context));
@@ -38,6 +29,23 @@ public class DailyWordTests : DatabaseBaseTests
         Assert.AreEqual<int>(5, word.Length);
         string? word2 = sut.GetWordByDate(2020, 1, 1);
         Assert.AreEqual<string?>(word, word2);
+    }
+
+    [TestMethod]
+    public void GettingDailyWordAddsDateWord()
+    {
+        using var context = new TestAppDbContext(Options);
+        
+        DateTime date = new(2020, 2, 1);
+        context.SaveChanges();
+
+        DateWordController sut = new(context, new Services.GameService(context), new Services.DateWordService(context));
+           
+        string? word = sut.GetWordByDate(2020, 2, 1);
+        DateWord? dateWord = context.DateWords.FirstOrDefault(x => x.Word.Value == word);
+        Assert.IsNotNull(dateWord);
+        Assert.AreEqual(date.Date, dateWord.Date.Date);
+
     }
 
     [TestMethod]
