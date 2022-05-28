@@ -87,9 +87,16 @@
           v-if="wordleGame.gameOver"
           width="20rem"
           :type="gameResult.type"
+          class="ma-2"
+          
         >
-          {{ gameResult.text }}
-          <v-btn class="ml-2" @click="resetGame"> Play Again? </v-btn>
+          <v-row >
+            {{ gameResult.text }}
+          </v-row>
+          <v-row justify="center">
+            <v-btn class="ma-1" @click="endGameSave"> Submit Score? </v-btn>
+            <v-btn class="ma-1" @click="resetGame"> Play Again? </v-btn>
+          </v-row>
         </v-alert>
       </v-row>
 
@@ -131,6 +138,7 @@ export default class DailyGame extends Vue {
       console.log('on mount word = ' + this.word)
     }, 500)
     this.retrieveUserName()
+    console.log(this.word)
   }
   startTime() {
     this.stopwatch.start()
@@ -204,7 +212,6 @@ export default class DailyGame extends Vue {
         this.playerName.toLocaleLowerCase() !== 'guest' &&
         this.playerName !== ''
       ) {
-        this.endGameSave()
       } else {
         this.dialog = true
       }

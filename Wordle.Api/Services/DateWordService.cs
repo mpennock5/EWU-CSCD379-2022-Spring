@@ -130,7 +130,7 @@ namespace Wordle.Api.Services
             }
         }
 
-        public bool SubmitGame(DateTime date, string username, int score, int timeSeconds)
+        public (bool, string) SubmitGame(DateTime date, string username, int score, int timeSeconds, string msg)
         {
             try
             {
@@ -139,20 +139,20 @@ namespace Wordle.Api.Services
                     .Include(x => x.Games)
                     .Include(x => x.Players)
                     .Include(x => x.Word)
-                    .First(x => x.Date == date);
+                    .FirstOrDefault(x => x.Date == date);
                 // if currentDateWord is null, the current days game has not been created 
                 // previously and this game submission is wrong/malicious
                 if (currentDateWord == null)
                 {
                     // end here and do nothing with the game submission
-                    return false;
+                    msg = "DateWord does not exist";
+                    return (false, msg);
                 }
-
                 // find player by username
                 Player? currentPlayer = _context.Players
                     .Include(x => x.Games)
-                    .First(x => x.Name == username);
-                // if player not already in database, create a new player using submitted game stats
+                    .FirstOrDefault(x => x.Name == username);
+                // if player not already in database, create a new player using submitted game stats 
                 if (currentPlayer == null)
                 {
                     _context.Players.Add(new Player()
@@ -162,6 +162,7 @@ namespace Wordle.Api.Services
                         AverageAttempts = score,
                         AverageSecondsPerGame = timeSeconds
                     });
+                    _context.SaveChanges();
                     // then reset currentPlayer reference to the newly created player
                     currentPlayer = _context.Players
                         .Include(x => x.Games)
@@ -180,7 +181,6 @@ namespace Wordle.Api.Services
 
                     currentPlayer.GameCount++;
                 }
-
                 var scoreStat = new ScoreStat()
                 {
                     Score = score,
@@ -189,7 +189,7 @@ namespace Wordle.Api.Services
                 _context.ScoreStats.Add(scoreStat);
                 _context.SaveChanges();
                 // create a game object
-                _context.Games.Add(new Game()
+                Game g = new Game()
                 {
                     Player = currentPlayer,
                     Word = currentDateWord.Word,
@@ -201,19 +201,28 @@ namespace Wordle.Api.Services
                     // would otherwise calculate the 'Actual' average from the list of Game objects
                     DateStarted = DateTime.Now.AddSeconds(-timeSeconds),// adding negative seconds
                     DateEnded = DateTime.Now,
-                });
+                };
+
+
+
+                //currentPlayer.Games.Add(g);
+                //currentDateWord.Games.Add(g);
+                _context.Games.Add(g);
+                _context.SaveChanges();
+
 
                 // attach game to DateWord and Player
+
                 //_context.Games.Add(submittedGame);
 
                 // make sure save goes through (NOT async) before returning result
-                _context.SaveChanges();
 
-                return true;
+                return (true, msg);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return false;
+                msg += e;
+                return (false, msg);
             }
         }
 

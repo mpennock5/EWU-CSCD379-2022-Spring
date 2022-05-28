@@ -87,10 +87,17 @@
           width="20rem"
           :type="gameResult.type"
         >
-          {{ gameResult.text }}
-          <v-btn class="ml-2" color="primary" nuxt to="/freeplay">
-            Go To Freeplay?
-          </v-btn>
+          <v-row >
+            {{ gameResult.text }}
+          </v-row>
+          <v-row>
+            <v-btn class="ma-1"  @click="endGameSave">
+              Submit Score?
+            </v-btn>
+            <v-btn class="ma-1"  nuxt to="/freeplay">
+              Go To Freeplay?
+            </v-btn>
+          </v-row>
         </v-alert>
       </v-row>
 
@@ -132,6 +139,7 @@ export default class DailyGame extends Vue {
       this.isLoaded = true
     }, 500)
     this.retrieveUserName()
+    console.log(this.word)
   }
   startTime() {
     this.stopwatch.start()
@@ -178,7 +186,6 @@ export default class DailyGame extends Vue {
         this.playerName.toLocaleLowerCase() !== 'guest' &&
         this.playerName !== ''
       ) {
-        this.endGameSave()
       } else {
         this.dialog = true
       }

@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height justify-center>
     <v-card>
-      <v-card-title class="display-3 justify-center">
+      <v-card-title class="display-3 justify-center" style="word-break: normal;">
         Recent Games
       </v-card-title>
       <v-card-text class="text-center">
@@ -19,7 +19,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(game, date) in returnData" :key="date" @click="linkTo(game.date)">
+            <tr
+              v-for="(game, date) in returnData"
+              :key="date"
+              @click="linkTo(game.date)"
+            >
               <td>{{ displayDate(game.date) }}</td>
 
               <td style="text-align: center">
@@ -40,13 +44,14 @@
             </tr>
           </tbody>
         </v-simple-table>
+        <p></p>
+        <v-row justify="center">
+          <v-btn color="primary" @click="GetLast10DailyWords">
+            Update Recent Games
+          </v-btn>
+        </v-row>
+        <p></p>
       </v-card-text>
-
-      <v-card-actions>
-        <v-btn color="primary" @click="GetLast10DailyWords">
-          Get recent Words
-        </v-btn>
-      </v-card-actions>
     </v-card>
   </v-container>
 </template>
@@ -63,21 +68,21 @@ export default class leaderboard extends Vue {
     this.GetLast10DailyWords()
   }
 
-  linkTo(date: any){
+  linkTo(date: any) {
     let convertedDate = this.convertDate(date)
     localStorage.setItem('Year', convertedDate.getFullYear().toString())
     localStorage.setItem('Month', (convertedDate.getMonth() + 1).toString())
     localStorage.setItem('Day', convertedDate.getDate().toString())
     this.$router.push({ name: 'freeplay' })
   }
-  convertDate(date: any){
+  convertDate(date: any) {
     let d = new Date(date)
     return d
   }
 
-  displayDate(date: any){
+  displayDate(date: any) {
     let d = this.convertDate(date)
-    return d.toLocaleDateString("en-US")
+    return d.toLocaleDateString('en-US')
   }
 
   GetLast10DailyWords() {
