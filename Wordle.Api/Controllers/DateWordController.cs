@@ -161,8 +161,8 @@ public class DateWordController : Controller
         {
             return BadRequest("bad gameDetails entered");
         }
-        string msg = "";
-        (bool,string) request = _dateWordService.SubmitGame(date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds, msg);
+        
+        (bool,string) request = _dateWordService.SubmitGame(date, gameDetails.Player, gameDetails.Score, gameDetails.TimeSeconds);
 
         if (request.Item1)
         {

@@ -130,8 +130,9 @@ namespace Wordle.Api.Services
             }
         }
 
-        public (bool, string) SubmitGame(DateTime date, string username, int score, int timeSeconds, string msg)
+        public (bool, string) SubmitGame(DateTime date, string username, int score, int timeSeconds)
         {
+            string msg = "";
             try
             {
                 // find the dateword
