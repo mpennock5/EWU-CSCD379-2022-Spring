@@ -15,7 +15,7 @@
               <th style="text-align: center">Total Plays</th>
               <th style="text-align: center">Avg. Score</th>
               <th style="text-align: center">Avg. Time</th>
-              <th style="text-align: center">Already Played?</th>
+              <th style="text-align: center">Completed</th>
             </tr>
           </thead>
           <tbody>
