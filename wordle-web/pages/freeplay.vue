@@ -88,14 +88,29 @@
           width="20rem"
           :type="gameResult.type"
           class="ma-2"
-          
         >
-          <v-row >
+          <v-row>
             {{ gameResult.text }}
           </v-row>
           <v-row justify="center">
-            <v-btn class="ma-1" @click="endGameSave" :disabled="wordleGame.hasLost"> Submit Score? </v-btn>
+            <v-btn
+              class="ma-1"
+              @click="endGameSave"
+              :disabled="wordleGame.hasLost"
+            >
+              Submit Score?
+            </v-btn>
           </v-row>
+
+          <v-row justify="center"
+            ><v-banner
+              v-model="submittedSuccess"
+              color="success"
+              rounded
+            >
+              Your Score has been submitted!
+            </v-banner></v-row
+          >
         </v-alert>
       </v-row>
 
@@ -128,6 +143,7 @@ export default class DailyGame extends Vue {
   wordleGame: WordleGame = new WordleGame(this.word!)
   isLoaded: boolean = false
   stopwatch = new Stopwatch()
+  submittedSuccess: boolean = false
 
   mounted() {
     this.startTime()
@@ -178,6 +194,7 @@ export default class DailyGame extends Vue {
   }
 
   resetGame() {
+    this.submittedSuccess = false
     localStorage.setItem('Year', '')
     localStorage.setItem('Month', '')
     localStorage.setItem('Day', '')
@@ -279,6 +296,9 @@ export default class DailyGame extends Vue {
   // public int TimeSeconds { get; set; }
   //   }
   endGameSave() {
+    //guard statement, only submit score once
+    if (this.submittedSuccess) return
+
     this.$axios.post('/api/DateWord/Post', {
       Year: localStorage.getItem('Year'),
       Month: localStorage.getItem('Month'),
@@ -287,6 +307,7 @@ export default class DailyGame extends Vue {
       Score: this.wordleGame.words.length,
       TimeSeconds: Math.floor(this.getTimeSeconds()),
     })
+    this.submittedSuccess = true
   }
 
   // previous version

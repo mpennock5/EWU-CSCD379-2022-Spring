@@ -87,17 +87,29 @@
           width="20rem"
           :type="gameResult.type"
         >
-          <v-row >
+          <v-row>
             {{ gameResult.text }}
           </v-row>
           <v-row>
-            <v-btn class="ma-1"  @click="endGameSave" :disabled="wordleGame.hasLost">
+            <v-btn
+              class="ma-1"
+              @click="endGameSave"
+              :disabled="hasLost"
+            >
               Submit Score?
             </v-btn>
-            <v-btn class="ma-1"  nuxt to="/freeplay">
-              Go To Freeplay?
-            </v-btn>
+            <v-btn class="ma-1" nuxt to="/freeplay"> Go To Freeplay? </v-btn>
           </v-row>
+
+          <v-row justify="center"
+            ><v-banner
+              v-model="submittedSuccess"
+              rounded
+
+            >
+              Your Score has been submitted!
+            </v-banner></v-row
+          >
         </v-alert>
       </v-row>
 
@@ -130,6 +142,8 @@ export default class DailyGame extends Vue {
   word: string = 'abcde'
   wordleGame: WordleGame = new WordleGame(this.word!)
   isLoaded: boolean = false
+  hasLost: boolean = true
+  submittedSuccess: boolean = false
   stopwatch = new Stopwatch()
 
   mounted() {
@@ -182,6 +196,7 @@ export default class DailyGame extends Vue {
   get gameResult() {
     if (this.wordleGame.state === GameState.Won) {
       this.stopTime()
+      this.hasLost = false
       if (
         this.playerName.toLocaleLowerCase() !== 'guest' &&
         this.playerName !== ''
@@ -226,6 +241,9 @@ export default class DailyGame extends Vue {
   }
 
   endGameSave() {
+    //guard statement, only submit score once
+    if (this.submittedSuccess) return
+
     let today = new Date()
     this.$axios.post('/api/DateWord/Post', {
       Year: today.getFullYear(),
@@ -235,6 +253,8 @@ export default class DailyGame extends Vue {
       Score: this.wordleGame.words.length,
       TimeSeconds: Math.floor(this.getTimeSeconds()),
     })
+    this.hasLost = true //disable button
+    this.submittedSuccess = true
   }
 
   getDailyWord() {
