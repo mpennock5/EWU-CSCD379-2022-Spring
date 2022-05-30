@@ -39,7 +39,7 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
     //ScoreStatsService.Seed(context);
-    PlayersService.Seed(context);
+    //PlayersService.Seed(context);
     Word.SeedWords(context);
 }
 // Configure the HTTP request pipeline.
