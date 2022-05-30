@@ -149,6 +149,17 @@ namespace Wordle.Api.Services
                     msg = "DateWord does not exist";
                     return (false, msg);
                 }
+                //Check to see if player has already played for this day
+                Game? playerGame = _context.Games
+                    .Include(x => x.Player)
+                    .Include(x => x.DateWord)
+                    .FirstOrDefault(x => x.DateWord!.Date == date && x.Player.Name == username);
+                //If player has, then return false
+                if (playerGame != null)
+                {
+                    msg = "Daily Game already completed for today";
+                    return(false, msg);
+                }
                 // find player by username
                 Player? currentPlayer = _context.Players
                     .Include(x => x.Games)
