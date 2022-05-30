@@ -45,7 +45,7 @@ jobs:
         if: success() || failure()        # run this step even if previous step failed
         with:
           name: dotnet-trx
-          path: '**/test-results.trx
+          path: '**/test-results.trx'
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.DOTNET_ROOT}}/myapp
