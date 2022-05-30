@@ -94,7 +94,7 @@
             {{ gameResult.text }}
           </v-row>
           <v-row justify="center">
-            <v-btn class="ma-1" @click="endGameSave"> Submit Score? </v-btn>
+            <v-btn class="ma-1" @click="endGameSave" :disabled="wordleGame.hasLost"> Submit Score? </v-btn>
             <v-btn class="ma-1" @click="resetGame"> Play Again? </v-btn>
           </v-row>
         </v-alert>

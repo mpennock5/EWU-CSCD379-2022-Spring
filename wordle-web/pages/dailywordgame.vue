@@ -91,7 +91,7 @@
             {{ gameResult.text }}
           </v-row>
           <v-row>
-            <v-btn class="ma-1"  @click="endGameSave">
+            <v-btn class="ma-1"  @click="endGameSave" :disabled="wordleGame.hasLost">
               Submit Score?
             </v-btn>
             <v-btn class="ma-1"  nuxt to="/freeplay">
