@@ -67,6 +67,17 @@ public class DailyWordTests : DatabaseBaseTests
         (bool, string) response = sut.SubmitGame(date.Date, "Gunther", 5, 45);
         Assert.IsTrue(response.Item1);
     }
+    [TestMethod]
+    public void DuplicateDailyGamesNotSubmitted()
+    {
+        using var context = new TestAppDbContext(Options);
+        DateWordService sut = new(context);
+        DateTime date = new DateTime(2022, 5, 26);
+        (bool, string) response = sut.SubmitGame(date.Date, "Gunther", 5, 45);
+        response = sut.SubmitGame(date.Date, "Gunther", 5, 45);
+        Assert.IsFalse(response.Item1);
+        Assert.AreEqual("Daily Game already completed for today", response.Item2);
+    }
 
     [TestMethod]
     public void DateWordControllerPost()
