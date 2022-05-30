@@ -16,8 +16,10 @@ namespace Wordle.Api.Tests
         {
             using var context = new TestAppDbContext(Options);
             var service = new GameService(context);
-
+            context.Words.Add(new Data.Word() { Value = "tests", Common = true });
+            context.Words.Add(new Data.Word() { Value = "zebra", Common = true });
             Guid playerGuid = Guid.NewGuid();
+
             var game = service.CreateGame(playerGuid);
 
             Assert.IsNotNull(game);

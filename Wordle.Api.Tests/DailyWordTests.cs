@@ -40,9 +40,10 @@ public class DailyWordTests : DatabaseBaseTests
         context.SaveChanges();
 
         DateWordController sut = new(context, new Services.GameService(context), new Services.DateWordService(context));
-           
+        DateWord? dateWord = context.DateWords.FirstOrDefault(x => x.Date.Date == date);
+        Assert.IsNull(dateWord);
         string? word = sut.GetWordByDate(2020, 2, 1);
-        DateWord? dateWord = context.DateWords.FirstOrDefault(x => x.Word.Value == word);
+        dateWord = context.DateWords.FirstOrDefault(x => x.Date.Date == date);
         Assert.IsNotNull(dateWord);
         Assert.AreEqual(date.Date, dateWord.Date.Date);
 

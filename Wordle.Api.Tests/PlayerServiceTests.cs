@@ -28,12 +28,6 @@ public class PlayerServiceTests
         Assert.AreEqual(playerCount, sut.GetPlayers().Count());
     }
 
-    [TestMethod]
-    public void GetTop10Player_CountMatchesTen_Success()
-    {
-        PlayersService sut = new(_context);
-        int playerCount = 10;
-        Assert.AreEqual(playerCount, sut.GetTop10Players().Count());
-    }
+    
 
 }
