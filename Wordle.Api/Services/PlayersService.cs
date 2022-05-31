@@ -44,7 +44,7 @@ public class PlayersService
 
         var player2 = _context.Players;
         
-        var player = player2.FirstOrDefault(x => x.Name == name);
+        var player = player2.Include(x => x.Games).FirstOrDefault(x => x.Name == name);
 
 
         if (player == null)
@@ -79,6 +79,47 @@ public class PlayersService
                 AverageSecondsPerGame = 0
             });
             context.SaveChanges();
+            PlayersService.UpdateStats(context, "Knights who say Ni", 4, 42);
+            PlayersService.UpdateStats(context, "Knights who say Ni", 3, 45);
+            PlayersService.UpdateStats(context, "Knights who say Ni", 4, 60);
+            PlayersService.UpdateStats(context, "Knights who say Ni", 4, 80);
+            PlayersService.UpdateStats(context, "Knights who say Ni", 1, 12);
         }
+    }
+
+    public static void UpdateStats(AppDbContext context, string name, int attempts, int seconds)
+    {
+        if (attempts < 1 || attempts > 6)
+        {
+            throw new ArgumentException("attempts not in proper range");
+        }
+        if (seconds < 0)
+        {
+            throw new ArgumentException("seconds not in proper range");
+        }
+
+        var player2 = context.Players;
+
+        var player = player2.Include(x => x.Games).FirstOrDefault(x => x.Name == name);
+
+
+        if (player == null)
+        {
+            context.Players.Add(new Player()
+            {
+                Name = name,
+                GameCount = 1,
+                AverageAttempts = attempts,
+                AverageSecondsPerGame = seconds
+            });
+        }
+        else
+        {
+            player.AverageSecondsPerGame = (player.AverageSecondsPerGame * player.GameCount + seconds) / (player.GameCount + 1);
+            player.AverageAttempts = (player.AverageAttempts * player.GameCount + attempts) / ++player.GameCount;
+
+        }
+
+        context.SaveChanges();
     }
 }

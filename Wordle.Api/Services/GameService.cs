@@ -63,6 +63,7 @@ namespace Wordle.Api.Services
 
                     Player = player,
                     WordId = 92,
+                    DateStarted = new DateTime(2022, 05, 18),
                     DateEnded = new DateTime(2022, 05, 18),
                     ScoreStatId = score.ScoreStatId,
                     DateWord = dateWord
@@ -76,6 +77,7 @@ namespace Wordle.Api.Services
 
                     Player = player,
                     WordId = 270,
+                    DateStarted = new DateTime(2022, 05, 19),
                     DateEnded = new DateTime(2022, 05, 19),
                     ScoreStatId = score.ScoreStatId,
                     DateWord = dateWord
@@ -89,6 +91,7 @@ namespace Wordle.Api.Services
 
                     Player = player,
                     WordId = 104,
+                    DateStarted = new DateTime(2022, 05, 20),
                     DateEnded = new DateTime(2022, 05, 20),
                     ScoreStatId = score.ScoreStatId,
                     DateWord = dateWord
@@ -102,19 +105,21 @@ namespace Wordle.Api.Services
 
                     Player = player,
                     WordId = 944,
+                    DateStarted = new DateTime(2022, 05, 21),
                     DateEnded = new DateTime(2022, 05, 21),
                     ScoreStatId = score.ScoreStatId,
                     DateWord = dateWord
 
                 });
                 context.SaveChanges();
-                dateWord = context.DateWords.First(x => x.WordId == 1006);
+                dateWord = context.DateWords.First(x => x.WordId == 9979);
                 score = context.ScoreStats.First(x => x.Seconds == 12);
                 context.Games.Add(new Game()
                 {
 
                     Player = player,
-                    WordId = 1006,
+                    WordId = 9979,
+                    DateStarted = new DateTime(2022, 05, 22),
                     DateEnded = new DateTime(2022, 05, 22),
                     ScoreStatId = score.ScoreStatId,
                     DateWord = dateWord

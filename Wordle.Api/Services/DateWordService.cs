@@ -281,9 +281,9 @@ namespace Wordle.Api.Services
                 context.DateWords.Add(new DateWord()
                 {
                     Date = new DateTime(2022, 5, 22),
-                    WordId = 1006,
+                    WordId = 9979,
                     TotalPlays = 1,
-                    AverageGuesses = 4,
+                    AverageGuesses = 1,
                     AverageSeconds = 12
                 });
                 context.SaveChanges();
