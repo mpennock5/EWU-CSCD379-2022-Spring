@@ -20,21 +20,6 @@ public class PlayersService
         return result;
     }
 
-    //public IEnumerable<Boolean> HasPlayed(string name, DateWordService dateWordService)
-    //{
-    //    var words = dateWordService.GetLast10Words();
-    //    var player = _context.Players.Include(x => x.Games).First(x => x.Name == name);
-    //    var games = player.Games.Select(x => x.DateStarted).ToList();
-    //    IList<Boolean> played = new List<Boolean>();
-    //    foreach (var date in words)
-    //    {
-    //        if (games.Contains(date.Date))
-    //        {
-    //            played
-    //        }
-    //    }
-    //}
-
     public IEnumerable<Player> GetTop10Players()
     {
         var result = _context.Players
@@ -84,14 +69,14 @@ public class PlayersService
 
     public static void Seed(AppDbContext context)
     {
-        if (!context.Players.Any())
+        if (!context.Players.Any(x => x.Name == "Knights who say Ni"))
         {
             context.Players.Add(new Player()
             {
-                Name = "Inigo Montoya",
-                GameCount = 2,
-                AverageAttempts = 2,
-                AverageSecondsPerGame = 31
+                Name = "Knights who say Ni",
+                GameCount = 0,
+                AverageAttempts = 0,
+                AverageSecondsPerGame = 0
             });
             context.SaveChanges();
         }

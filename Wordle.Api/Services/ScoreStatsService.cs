@@ -31,23 +31,44 @@ namespace Wordle.Api.Services
             //scoreStat.AverageSeconds = (scoreStat.AverageSeconds * scoreStat.TotalGames + seconds) / ++scoreStat.TotalGames;
             _context.SaveChanges();
         }
-        
-        //public static void Seed(AppDbContext context)
-        //{
-        //    if (!context.ScoreStats.Any())
-        //    {
-        //        for (int i = 1; i <= 6; i++)
-        //        {
-        //            context.ScoreStats.Add(new ScoreStat()
-        //            {
-        //                Score = i,
-        //                AverageSeconds = 0,
-        //                TotalGames = 0
-        //            });
-                    
-        //        }
-        //        context.SaveChanges();
-        //    }
-        //}
+
+        public static void Seed(AppDbContext context)
+        {
+            if (!context.Players.Any(x => x.Name == "Knights who say Ni"))
+            {
+               
+                context.ScoreStats.Add(new ScoreStat()
+                {
+                    Score = 4,
+                    Seconds = 42                        
+                });
+                context.SaveChanges();
+                context.ScoreStats.Add(new ScoreStat()
+                {
+                    Score = 3,
+                    Seconds = 45
+                });
+                context.ScoreStats.Add(new ScoreStat()
+                {
+                    Score = 4,
+                    Seconds = 60
+                });
+                context.SaveChanges();
+                context.ScoreStats.Add(new ScoreStat()
+                {
+                    Score = 4,
+                    Seconds = 80
+                });
+                context.SaveChanges();
+                context.ScoreStats.Add(new ScoreStat()
+                {
+                    Score = 4,
+                    Seconds = 12
+                });
+
+
+                context.SaveChanges();
+            }
+        }
     }
 }

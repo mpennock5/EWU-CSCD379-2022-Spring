@@ -238,5 +238,57 @@ namespace Wordle.Api.Services
             }
         }
 
+        public static void Seed(AppDbContext context)
+        {
+            if(!context.DateWords.Any(x => x.Date == new DateTime(2022, 5, 18)))
+            {
+                context.DateWords.Add(new DateWord()
+                {
+                    Date = new DateTime(2022, 5, 18),
+                    WordId = 92,
+                    TotalPlays = 1,
+                    AverageGuesses = 4,
+                    AverageSeconds = 42
+                });
+                context.SaveChanges();
+                context.DateWords.Add(new DateWord()
+                {
+                    Date = new DateTime(2022, 5, 19),
+                    WordId = 270,
+                    TotalPlays = 1,
+                    AverageGuesses = 3,
+                    AverageSeconds = 45
+                });
+                context.SaveChanges();
+                context.DateWords.Add(new DateWord()
+                {
+                    Date = new DateTime(2022, 5, 20),
+                    WordId = 104,
+                    TotalPlays = 1,
+                    AverageGuesses = 4,
+                    AverageSeconds = 60
+                });
+                context.SaveChanges();
+                context.DateWords.Add(new DateWord()
+                {
+                    Date = new DateTime(2022, 5, 21),
+                    WordId = 944,
+                    TotalPlays = 1,
+                    AverageGuesses = 4,
+                    AverageSeconds = 80
+                });
+                context.SaveChanges();
+                context.DateWords.Add(new DateWord()
+                {
+                    Date = new DateTime(2022, 5, 22),
+                    WordId = 1006,
+                    TotalPlays = 1,
+                    AverageGuesses = 4,
+                    AverageSeconds = 12
+                });
+                context.SaveChanges();
+            }
+        }
+
     }
 }
