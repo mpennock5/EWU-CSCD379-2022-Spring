@@ -12,7 +12,7 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-main>
+    <v-main class="main-page">
       <Nuxt />
     </v-main>
     <v-navigation-drawer v-model="rightDrawer" :right="right" temporary fixed>
@@ -106,6 +106,19 @@ export default {
   },
 }
 </script>
+
+<style>
+.main-page {
+  background: url(static\pexels-tim-mossholder-3612932.jpg) bottom center no-repeat;
+  background-size: auto 100% 
+}
+@media (max-width: 500px) {
+    .main-page {
+        background: url(static\pexels-tim-mossholder-3612932.jpg) bottom center no-repeat;
+        background-size: auto 100%;
+    }
+}
+</style>
 
 <!-- 
 <v-tooltip bottom>
