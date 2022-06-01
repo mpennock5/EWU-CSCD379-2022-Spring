@@ -26,7 +26,7 @@ namespace Wordle.Api.Services
             }
             else
             {
-                words = _context.DateWords.OrderBy(x => x.Date).Take(maxReturedWords);
+                words = _context.DateWords.OrderByDescending(x => x.Date).Take(maxReturedWords);
             }
 
             var player = _context.Players.Include(x => x.Games).FirstOrDefault(x => x.Name == name);

@@ -29,5 +29,5 @@ namespace Wordle.Api.Data
 
 
         }
-    }        
+    }
 }

@@ -8,60 +8,30 @@ namespace Wordle.Api.Services
     public class GameService
     {
         private readonly AppDbContext _context;
-        private readonly static object _mutex = new();
-        private static readonly ConcurrentDictionary<DateTime, Word> _cache = new();
 
         public GameService(AppDbContext context)
         {
             _context = context;
         }
-        
-        public Game CreateGame(Guid playerGuid, GameTypeEnum gameType, DateTime? date = null)
+
+        public Game CreateGame(Guid guid)
         {
             var player = _context.Players
-                .FirstOrDefault(x => x.Guid == playerGuid);
+                .FirstOrDefault(x => x.Guid == guid);
             if (player is null)
             {
-                player = new Player { Guid = playerGuid };
+                player = new Player { Guid = guid };
                 _context.Players.Add(player);
                 _context.SaveChanges();
             }
 
-            //Return the game if it already exists
-            Word word;
-            if (gameType == GameTypeEnum.WordOfTheDay)
-            {
-                if (date == null) throw new ArgumentException("Date cannot be null if the game type is WordOfTheDay");
-                
-                var existingGame = _context.Games
-                    .Include(x => x.Guesses)
-                    .Include(x => x.Word)
-                    .FirstOrDefault(x => x.PlayerId == player.PlayerId &&
-                                         x.GameType == GameTypeEnum.WordOfTheDay &&
-                                         x.DateEnded.HasValue &&
-                                         x.WordDate == date.Value);
-                if (existingGame is not null)
-                {
-                    return existingGame;
-                }
-                // If this is a new game, get the word of the day.
-                word = GetDailyWord(date.Value) ?? throw new ArgumentException("Date is too far in the future");
-            }
-            else
-            {
-                // If this is a new game, get a random word.
-                word = GetWord();
-            }
-
             var game = new Game()
             {
-                WordId = word.WordId,
-                PlayerId = player.PlayerId,
-                DateStarted = DateTime.UtcNow,
-                GameType = gameType,
-                WordDate = date
+                Word = GetWord(),
+                Player = player,
+                DateStarted = DateTime.UtcNow
             };
-            
+
             _context.SaveChanges();
 
             return game;
@@ -69,10 +39,9 @@ namespace Wordle.Api.Services
         }
         public Word GetWord()
         {
-            int wordCount = _context.Words.Count(f => f.Common);
+            int wordCount = _context.Words.Count();
             int randomIndex = new Random().Next(0, wordCount);
             Word chosenWord = _context.Words
-                .Where(f => f.Common)
                 .OrderBy(w => w.WordId)
                 .Skip(randomIndex)
                 .Take(1)
@@ -82,7 +51,7 @@ namespace Wordle.Api.Services
 
         public static void Seed(AppDbContext context)
         {
-            if(!context.Games
+            if (!context.Games
                 .Include(x => x.Player)
                 .Any(x => x.Player.Name == "Knights who say Ni"))
             {
@@ -161,3 +130,4 @@ namespace Wordle.Api.Services
         }
     }
 }
+
