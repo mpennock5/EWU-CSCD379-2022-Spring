@@ -5,6 +5,11 @@ namespace Wordle.Api.Data;
 
 public class Game
 {
+    public enum GameTypeEnum{
+        Random = 1,
+        WordOfTheDay = 2,
+    }
+    
     public int GameId { get; set; }
     public int PlayerId { get; set; }
     public Player Player { get; set; } = null!;

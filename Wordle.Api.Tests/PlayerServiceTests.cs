@@ -7,23 +7,13 @@ using Wordle.Api.Services;
 namespace Wordle.Api.Tests;
 
 [TestClass]
-public class PlayerServiceTests
+public class PlayerServiceTests : DatabaseBaseTests
 {
-    private readonly AppDbContext _context;
-
-    public PlayerServiceTests()
-    {
-        var contextOptions = new DbContextOptionsBuilder<AppDbContext>()
-            .UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=Wordle.Api.Tests;Trusted_Connection=True;MultipleActiveResultSets=true");
-        _context = new AppDbContext(contextOptions.Options);
-        _context.Database.Migrate();
-        PlayersService.Seed(_context);
-    }
-
     [TestMethod]
     public void GetPlayers_MatchesPlayerCount_Success()
     {
-        PlayersService sut = new(_context);
+        using var context = new TestAppDbContext(Options);
+        PlayersService sut = new(context);
         int playerCount = sut.GetPlayers().Count();
         Assert.AreEqual(playerCount, sut.GetPlayers().Count());
     }
