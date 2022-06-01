@@ -70,7 +70,7 @@
       <v-row justify="center">
         <v-img
           contain
-          src="Freeplay !wordle.png"
+          src="freeplay.png"
           class="center"
           style="width: 40rem; height: 8rem"
         />
@@ -97,6 +97,7 @@
               class="ma-1"
               @click="endGameSave"
               :disabled="wordleGame.hasLost"
+              v-if="submittedSuccess == false"
             >
               Submit Score?
             </v-btn>
