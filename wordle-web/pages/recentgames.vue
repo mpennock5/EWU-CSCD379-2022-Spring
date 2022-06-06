@@ -84,7 +84,7 @@ export default class leaderboard extends Vue {
     let d = this.convertDate(date)
     return d.toLocaleDateString('en-US')
   }
-
+//apicall
   GetLast10DailyWords() {
     this.title = 'Click a day below to play that game'
     this.$axios
