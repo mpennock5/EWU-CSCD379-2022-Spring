@@ -32,7 +32,6 @@ namespace Wordle.Api.Identity
                 {
                     UserName = "Admin@intellitect.com",
                     Email = "Admin@intellitect.com",
-                    //birthday over 21
                     DateOfBirth = "1990-01-01",
                     MasterOfTheUniverse = true,
                 };
@@ -44,6 +43,22 @@ namespace Wordle.Api.Identity
                 {
                     await userManager.AddToRoleAsync(user, Roles.Admin);
                 }
+            }
+        }
+
+        private static async Task SeedOver21UserAsync(UserManager<AppUser> userManager)
+        {
+            //Seed user who is over 21 
+            if (await userManager.FindByNameAsync("over21user@intellitect.com") == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "over21user@intellitect.com",
+                    Email = "over21user@intellitect.com",
+                    DateOfBirth = "1990-01-01",
+                };
+
+                await userManager.CreateAsync(user, "P@ssw0rd456");
             }
         }
     }
