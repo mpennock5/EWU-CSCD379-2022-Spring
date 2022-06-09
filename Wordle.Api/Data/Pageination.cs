@@ -35,7 +35,7 @@ public class Pageination
         }
 
         totalItems = queryWord.Count;
-        maxPages = totalItems / _pageSize;
+        maxPages = (int)Math.Ceiling((double)totalItems / _pageSize);
         int currentIndex = _currentPage * _pageSize;
         //add pages items to returnable list
         for (int i = 0; i < _pageSize; i++)
