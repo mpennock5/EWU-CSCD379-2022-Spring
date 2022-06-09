@@ -17,32 +17,22 @@ public class Pageination
         _pageSize = pageSize;
         _currentPage = currentPage;
 
-        //return alphabetical list of wordsw by value
-        List<Word> words = _context.Words
+        // pageSized alphabetical list of words
+        List<Word>? foundwords = _context.Words
+            .Where(x => x.Value.Contains(query))
             .OrderBy(x => x.Value)
+            .Skip(pageSize * currentPage)
+            .Take(pageSize)
             .ToList();
 
-        //dont return extra items in word class
-        List<(string, bool)> queryWord = new();
-
-        if (query is null) query = "*";
-        foreach (Word word in words)
+        foreach (var word in foundwords)
         {
-            if (word.Value.Contains(query))
-            {
-                queryWord.Add((word.Value, word.Common));
-            }
+            returnable.Add((word.Value, word.Common));
         }
 
-        totalItems = queryWord.Count;
+        // it is possible to have an empty list
+        totalItems = returnable.Count;
         maxPages = (int)Math.Ceiling((double)totalItems / _pageSize);
-        int currentIndex = _currentPage * _pageSize;
-        //add pages items to returnable list
-        for (int i = 0; i < _pageSize; i++)
-        {
-            if (currentIndex + i < totalItems)
-                returnable.Add(queryWord[currentIndex + i]);
-        }
     }
 
 
