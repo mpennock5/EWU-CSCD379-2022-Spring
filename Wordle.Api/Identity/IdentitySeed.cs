@@ -21,29 +21,28 @@ namespace Wordle.Api.Identity
             {
                 await roleManager.CreateAsync(new IdentityRole(Roles.Admin));
             }
-            if (!await roleManager.RoleExistsAsync(Roles.Grant))
-            {
-                await roleManager.CreateAsync(new IdentityRole(Roles.Grant));
-            }
         }
 
         private static async Task SeedAdminUserAsync(UserManager<AppUser> userManager)
         {
-            // Seed Admin User
+            // Seed Admin User, role is admin, must be over 21 and have MasterOfTheUniverse to use all site features
             if (await userManager.FindByNameAsync("Admin@intellitect.com") == null)
             {
                 AppUser user = new AppUser
                 {
                     UserName = "Admin@intellitect.com",
                     Email = "Admin@intellitect.com",
+                    //birthday over 21
+                    DateOfBirth = "1990-01-01",
+                    MasterOfTheUniverse = true,
                 };
+
 
                 IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
 
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, Roles.Admin);
-                    await userManager.AddToRoleAsync(user, Roles.Grant);
                 }
             }
         }
