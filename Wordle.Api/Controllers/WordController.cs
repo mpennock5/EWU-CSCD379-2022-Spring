@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using Wordle.Api.Data;
 using Wordle.Api.Services;
+using Wordle.Api.Dtos;
 
 namespace Wordle.Api.Controllers;
 
@@ -18,9 +19,9 @@ public class WordController : Controller
         _wordService = wordService;
     }
 
-
+    //can also use this method for the search
     [HttpGet("GetWordsPerPage")]
-    public object GetWordPage(int pageSize, int currentPage, string? query)
+    public PageDto GetWordPage(int pageSize, int currentPage, string? query)
     {
         // verify query
         if (query is not null)
@@ -29,20 +30,22 @@ public class WordController : Controller
             Regex rgx = new Regex("[a-z]{0,5}");
             if (!rgx.IsMatch(query))
             {
-                return "regex fail";
+                //return "regex fail";
+                throw new Exception("regex fail");
             }
         }
-        //can also use this method for the search
-        else query = "*";
+        
+        else query = "";
 
         // verify page size
         if (pageSize >= 10 && pageSize <= 100)
         {
-            Pageination page = _wordService.GetWordPage(pageSize, currentPage, query);
+            PageDto page = _wordService.GetWordPage(pageSize, currentPage, query);
             return page;
         }
 
-        return "controller fail";
+        //return "controller fail";
+        throw new Exception("controller fail");
     }
     [HttpPost("SetCommonWord")]
     [Authorize]

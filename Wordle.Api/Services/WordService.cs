@@ -1,4 +1,5 @@
 ﻿using Wordle.Api.Data;
+using Wordle.Api.Dtos;
 
 namespace Wordle.Api.Services;
 
@@ -47,9 +48,28 @@ public class WordService
             return false;
         }
     }
-    public Pageination GetWordPage(int pageSize, int currentPage, string query)
+    public PageDto GetWordPage(int pageSize, int currentPage, string query)
     {
-        //TODO move object from data folder to DTO and business logic to this method
-        return new Pageination(_context, pageSize, currentPage, query);
+
+        var foundWords = _context.Words
+                .Where(x => x.Value.StartsWith(query))
+                //test to see if this is faster (not sorting in database)
+                //ToList().OrderBy().Skip().Take()
+                .Skip(pageSize * currentPage)
+                .Take(pageSize)
+                .OrderBy(x => x.Value)
+                .Select(x => new Tuple<string, bool>(x.Value, x.Common)).ToList();
+        int total = foundWords.Count();
+        return new PageDto()
+        {
+
+            PageSize = pageSize,
+            CurrentPage = currentPage,
+            returnable = foundWords,
+            TotalItems = total,
+            MaxPages = (int)Math.Ceiling((double)total / pageSize)
+        };
+
     }
+    
 }
