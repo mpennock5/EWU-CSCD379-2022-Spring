@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.RegularExpressions;
 using Wordle.Api.Data;
 using Wordle.Api.Services;
@@ -10,8 +11,10 @@ namespace Wordle.Api.Controllers;
 public class WordController : Controller
 {
     private readonly WordService _wordService;
-    public WordController(WordService wordService)
+    private readonly AppDbContext _context;
+    public WordController(WordService wordService, AppDbContext context)
     {
+        _context = context;
         _wordService = wordService;
     }
 
@@ -29,6 +32,7 @@ public class WordController : Controller
                 return "regex fail";
             }
         }
+        //can also use this method for the search
         else query = "*";
 
         // verify page size
@@ -40,4 +44,42 @@ public class WordController : Controller
 
         return "controller fail";
     }
+    [HttpPost("SetCommonWord")]
+    [Authorize]
+    public IActionResult SetCommonWord(string target, bool common)
+    {
+        var word = _context.Words.FirstOrDefault(x=>x.Value == target);
+        if(word == null)
+        {
+            return StatusCode(500, "An error has occured. Contact your database administrator");
+        }
+
+        word.Common = common;
+        return Ok();
+    }
+    [HttpPost("DeleteWord")]
+    [Authorize]
+    public IActionResult DeleteWord(string target)
+    {
+       
+        if (_wordService.DeleteWordByValue(target))
+        {
+            return Ok();
+            // call the getlist method to display updated wordlist?
+        }
+        return BadRequest();
+        
+    }
+
+    [HttpPost("AddWord")]
+    [Authorize]
+    public IActionResult AddWord(string target)
+    {
+        if (_wordService.AddWordByValue(target))
+        {
+            return Ok();
+        }
+        return BadRequest();
+    }
+
 }

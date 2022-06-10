@@ -19,7 +19,9 @@ public class Pageination
 
         // pageSized alphabetical list of words
         var foundwords = _context.Words
-            .Where(x => x.Value.Contains(query))
+            .Where(x => x.Value.StartsWith(query))
+            //test to see if this is faster (not sorting in database)
+            //ToList().OrderBy().Skip().Take()
             .Skip(pageSize * currentPage)
             .Take(pageSize)
             .OrderBy(x => x.Value);
