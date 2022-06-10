@@ -15,7 +15,7 @@ public class WordController : Controller
         _wordService = wordService;
     }
 
-    [Route("[action]")]
+
     [HttpGet("GetWordsPerPage")]
     public Pageination? GetWordPage(int pageSize, int currentPage, string? query)
     {
