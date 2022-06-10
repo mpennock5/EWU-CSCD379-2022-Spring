@@ -8,7 +8,7 @@ public class Pageination
     private int _currentPage;
     private int maxPages;
     private int _pageSize;
-    List<(string, bool)> returnable = new();
+    public List<(string, bool)> returnable = new();
 
 
     public Pageination(AppDbContext context, int pageSize, int currentPage, string query)
@@ -18,12 +18,11 @@ public class Pageination
         _currentPage = currentPage;
 
         // pageSized alphabetical list of words
-        List<Word>? foundwords = _context.Words
+        var foundwords = _context.Words
             .Where(x => x.Value.Contains(query))
-            .OrderBy(x => x.Value)
             .Skip(pageSize * currentPage)
             .Take(pageSize)
-            .ToList();
+            .OrderBy(x => x.Value);
 
         foreach (var word in foundwords)
         {

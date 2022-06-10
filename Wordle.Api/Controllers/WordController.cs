@@ -17,7 +17,7 @@ public class WordController : Controller
 
 
     [HttpGet("GetWordsPerPage")]
-    public Pageination? GetWordPage(int pageSize, int currentPage, string? query)
+    public object GetWordPage(int pageSize, int currentPage, string? query)
     {
         // verify query
         if (query is not null)
@@ -26,7 +26,7 @@ public class WordController : Controller
             Regex rgx = new Regex("[a-z]{0,5}");
             if (!rgx.IsMatch(query))
             {
-                return null;
+                return "regex fail";
             }
         }
         else query = "*";
@@ -34,9 +34,10 @@ public class WordController : Controller
         // verify page size
         if (pageSize >= 10 && pageSize <= 100)
         {
-            return _wordService.GetWordPage(pageSize, currentPage, query);
+            Pageination page = _wordService.GetWordPage(pageSize, currentPage, query);
+            return page;
         }
 
-        return null;
+        return "controller fail";
     }
 }
