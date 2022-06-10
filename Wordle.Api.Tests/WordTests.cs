@@ -34,5 +34,16 @@ namespace Wordle.Api.Tests
 
             Assert.IsNotNull(page);
         }
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException))]
+        public void GetPageIllegalQueryException()
+        {
+            using var context = new TestAppDbContext(Options);
+            WordController sut = new(new Services.WordService(context), context);
+
+            Word.SeedWords(context, "WordsTest.csv");
+            sut.GetWordPage(10, 1, ";");
+        }
+        
     }
 }

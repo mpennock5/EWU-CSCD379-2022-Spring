@@ -27,11 +27,11 @@ public class WordController : Controller
         if (query is not null)
         {
             query = query.ToLower();
-            Regex rgx = new Regex("[a-z]{0,5}");
+            Regex rgx = new Regex("[a-z]{1,5}");
             if (!rgx.IsMatch(query))
             {
                 //return "regex fail";
-                throw new Exception("regex fail");
+                throw new ArgumentException("regex fail");
             }
         }
         
