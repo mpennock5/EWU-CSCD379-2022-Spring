@@ -71,7 +71,7 @@ public class TokenController : Controller
         }
         return Unauthorized("The username or password is incorrect");
     }
-    
+
     //for ease of testing only
     [HttpPost("GetAdminToken")]
     public async Task<IActionResult> GetAdminToken()
@@ -80,7 +80,9 @@ public class TokenController : Controller
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Secret));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
 
-        var claims = new List<Claim>
+        if (user != null)
+        {
+            var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -89,21 +91,23 @@ public class TokenController : Controller
                 new Claim(Claims.UserName, user.UserName.ToString().Substring(0,user.UserName.ToString().IndexOf("@"))),
             };
 
-        var roles = await _userManager.GetRolesAsync(user);
-        foreach (var role in roles)
-        {
-            claims.Add(new Claim(ClaimTypes.Role, role));
-        }
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
-        var token = new JwtSecurityToken(
-            issuer: _jwtConfiguration.Issuer,
-            audience: _jwtConfiguration.Audience,
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(_jwtConfiguration.ExpirationInMinutes),
-            signingCredentials: credentials
-        );
-        var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
-        return Ok(new { token = jwtToken });
+            var token = new JwtSecurityToken(
+                issuer: _jwtConfiguration.Issuer,
+                audience: _jwtConfiguration.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(_jwtConfiguration.ExpirationInMinutes),
+                signingCredentials: credentials
+            );
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new { token = jwtToken });
+        }
+        return BadRequest();
     }
 
     [HttpGet("test")]
@@ -114,7 +118,7 @@ public class TokenController : Controller
     }
 
     [HttpGet("testadmin")]
-    [Authorize(Roles=Roles.Admin)]
+    [Authorize(Roles = Roles.Admin)]
     public string TestAdmin()
     {
         return "Authorized as Admin";
@@ -128,7 +132,7 @@ public class TokenController : Controller
     }
 
     [HttpGet("testrandomadmin")]
-    [Authorize(Policy=Policies.RandomAdmin)]
+    [Authorize(Policy = Policies.RandomAdmin)]
     public string TestRandomAdmin()
     {
         return $"Authorized randomly as Random Admin with {User.Identities.First().Claims.First(c => c.Type == Claims.Random).Value}";

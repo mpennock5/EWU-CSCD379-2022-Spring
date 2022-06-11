@@ -37,44 +37,21 @@ public static class Policies
     public const string MasterOfTheUniverse = "MasterOfTheUniverse";
     public static void MasterOfTheUniversePolicy(AuthorizationPolicyBuilder policy)
     {
+        policy.RequireClaim(Claims.MasterOfTheUniverse);
         policy.RequireAssertion(context =>
         {
-            string? isMasterOfTheUniverse = context.User.Claims.FirstOrDefault(u => u.Type == Claims.MasterOfTheUniverse)?.Value;
-            try
+            var user = context.User.Claims.FirstOrDefault(c => c.Type == Claims.MasterOfTheUniverse);
+            if (user is not null)
             {
-                Console.WriteLine(isMasterOfTheUniverse);
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
-            if (isMasterOfTheUniverse is null)
-            {
-                return false;
-            }
-            if (Boolean.Parse(isMasterOfTheUniverse))
-            {
-                var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
-                return over21(userBDay);
+                bool isMasterOfTheUniverse = Boolean.Parse(user.Value);
+                if (isMasterOfTheUniverse)
+                {
+                    var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
+                    return over21(userBDay);
+                }
             }
             return false;
         });
-        //policy.RequireClaim(Claims.MasterOfTheUniverse);
-        //policy.RequireAssertion(context =>
-        //{
-        //    var user = context.User.Claims.FirstOrDefault(c => c.Type == Claims.MasterOfTheUniverse);
-        //    if (user is not null)
-        //    {
-        //        bool isMasterOfTheUniverse = Boolean.Parse(user.Value);
-        //        if (isMasterOfTheUniverse)
-        //        {
-        //            var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
-        //            return over21(userBDay);
-        //        }
-        //    }
-        //    return false;
-        //});
     }
 
     //helper method
