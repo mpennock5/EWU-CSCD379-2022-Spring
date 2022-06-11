@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 using Wordle.Api.Data;
 
 namespace Wordle.Api.Identity
@@ -21,6 +22,10 @@ namespace Wordle.Api.Identity
             {
                 await roleManager.CreateAsync(new IdentityRole(Roles.Admin));
             }
+            if (!await roleManager.RoleExistsAsync(Roles.MasterOfTheUniverse))
+            {
+                await roleManager.CreateAsync(new IdentityRole(Roles.MasterOfTheUniverse));
+            }
         }
 
         private static async Task SeedAdminUserAsync(UserManager<AppUser> userManager)
@@ -33,15 +38,15 @@ namespace Wordle.Api.Identity
                     UserName = "Admin@intellitect.com",
                     Email = "Admin@intellitect.com",
                     DateOfBirth = "1990-01-01",
-                    MasterOfTheUniverse = true,
                 };
-
 
                 IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
 
                 if (result.Succeeded)
                 {
                     await userManager.AddToRoleAsync(user, Roles.Admin);
+                    await userManager.AddToRoleAsync(user, Roles.MasterOfTheUniverse);
+
                 }
             }
         }

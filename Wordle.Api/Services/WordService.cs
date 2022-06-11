@@ -50,16 +50,20 @@ public class WordService
     }
     public PageDto GetWordPage(int pageSize, int currentPage, string query)
     {
-
+        
         var foundWords = _context.Words
                 .Where(x => x.Value.StartsWith(query))
                 //test to see if this is faster (not sorting in database)
                 //ToList().OrderBy().Skip().Take()
-                .Skip(pageSize * currentPage)
+                .Skip(pageSize * currentPage)// zero based index on page number
                 .Take(pageSize)
                 .OrderBy(x => x.Value)
                 .Select(x => new Tuple<string, bool>(x.Value, x.Common)).ToList();
-        int total = foundWords.Count();
+        
+        int total = _context.Words
+                .Where(x => x.Value.StartsWith(query))
+                .Count();
+
         return new PageDto()
         {
 

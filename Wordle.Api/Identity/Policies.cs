@@ -5,6 +5,7 @@ namespace Wordle.Api.Identity;
 public static class Policies
 {
     public const string RandomAdmin = "RandomAdmin";
+    
 
     public static void RandomAdminPolicy(AuthorizationPolicyBuilder policy)
     {
@@ -28,27 +29,52 @@ public static class Policies
             //get the user and check age
             var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
             return over21(userBDay);
-            
+
         });
     }
 
     //policy to verify age is 21+ && MasterOfTheUniverse
-    public static void Over21AndMasterOfTheUniversePolicy(AuthorizationPolicyBuilder policy)
+    public const string MasterOfTheUniverse = "MasterOfTheUniverse";
+    public static void MasterOfTheUniversePolicy(AuthorizationPolicyBuilder policy)
     {
         policy.RequireAssertion(context =>
         {
-            var user = context.User.Claims.FirstOrDefault(c => c.Type == Claims.MasterOfTheUniverse);
-            if (user is not null)
+            string? isMasterOfTheUniverse = context.User.Claims.FirstOrDefault(u => u.Type == Claims.MasterOfTheUniverse)?.Value;
+            try
             {
-                bool isMasterOfTheUniverse = Boolean.Parse(user.Value);
-                if (isMasterOfTheUniverse)
-                {
-                    var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
-                    return over21(userBDay);
-                }
+                Console.WriteLine(isMasterOfTheUniverse);
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            if (isMasterOfTheUniverse is null)
+            {
+                return false;
+            }
+            if (Boolean.Parse(isMasterOfTheUniverse))
+            {
+                var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
+                return over21(userBDay);
             }
             return false;
         });
+        //policy.RequireClaim(Claims.MasterOfTheUniverse);
+        //policy.RequireAssertion(context =>
+        //{
+        //    var user = context.User.Claims.FirstOrDefault(c => c.Type == Claims.MasterOfTheUniverse);
+        //    if (user is not null)
+        //    {
+        //        bool isMasterOfTheUniverse = Boolean.Parse(user.Value);
+        //        if (isMasterOfTheUniverse)
+        //        {
+        //            var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
+        //            return over21(userBDay);
+        //        }
+        //    }
+        //    return false;
+        //});
     }
 
     //helper method
