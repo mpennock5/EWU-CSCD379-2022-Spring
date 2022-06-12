@@ -55,14 +55,15 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(word, wordId) in words" :key="wordId"></tr>
-            <td>placeholder word</td>
-            <td style="text-align: center">placeholder common</td>
-            <td style="text-align: right">
-            <v-btn>common+</v-btn>
-            <v-btn>common-</v-btn>
-            <v-btn>delete</v-btn>
-            </td>
+            <tr v-for="(word, wordId) in words" :key="wordId">
+              <td>{{ word.item1 }}</td>
+              <td style="text-align: center">{{ word.item2}}</td>
+              <td style="text-align: right">
+              <v-btn>common+</v-btn>
+              <v-btn>common-</v-btn>
+              <v-btn>delete</v-btn>
+              </td>
+            </tr>
           </tbody>
         </v-simple-table>
 
