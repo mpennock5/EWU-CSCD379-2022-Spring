@@ -60,6 +60,8 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(conn
 builder.Services.AddScoped<ScoreStatsService>();
 builder.Services.AddScoped<PlayersService>();
 builder.Services.AddScoped<GameService>();
+builder.Services.AddScoped<WordService>();
+
 
 //Identity stuff
 builder.Services.AddIdentityCore<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
@@ -89,6 +91,7 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy(Policies.RandomAdmin, Policies.RandomAdminPolicy);
     options.AddPolicy("IsGrantPolicy", policy => policy.RequireRole("Grant"));
+    options.AddPolicy(Policies.Over21, Policies.Over21Policy);
 });
 
 var app = builder.Build();

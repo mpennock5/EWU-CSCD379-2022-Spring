@@ -45,6 +45,12 @@
         </v-list-item>
 
         <v-list-item>
+          <v-btn text block nuxt to="/admintools">
+            Admin <v-icon>mdi-cog</v-icon>
+          </v-btn>
+        </v-list-item>
+
+        <v-list-item>
           <v-btn text block>
             <SettingsDialog />
           </v-btn>

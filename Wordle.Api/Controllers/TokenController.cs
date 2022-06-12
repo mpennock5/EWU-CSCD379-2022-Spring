@@ -25,6 +25,7 @@ public class TokenController : Controller
     [HttpPost("GetToken")]
     public async Task<IActionResult> GetToken([FromBody] UserCredentials userCredentials)
     {
+        //check to make sure there is a username and password submitted
         if (string.IsNullOrEmpty(userCredentials.Username))
         {
             return BadRequest("Username is required");
@@ -34,10 +35,12 @@ public class TokenController : Controller
             return BadRequest("Password is required");
         }
 
+        //find user account specified
         var user = _context.Users.FirstOrDefault(u => u.UserName == userCredentials.Username);
 
         if (user is null) { return Unauthorized("The user account was not found"); }
 
+        //validate password if account is found
         bool results = await _userManager.CheckPasswordAsync(user, userCredentials.Password);
         if (results)
         {
@@ -51,7 +54,9 @@ public class TokenController : Controller
                 new Claim("UserId", user.Id.ToString()),
                 new Claim(Claims.Random, (new Random()).NextDouble().ToString()),
                 new Claim(Claims.UserName, user.UserName.ToString().Substring(0,user.UserName.ToString().IndexOf("@"))),
+                new Claim(Claims.DateOfBirth, user.DateOfBirth)
             };
+
             var roles = await _userManager.GetRolesAsync(user);
             foreach (var role in roles)
             {
@@ -71,6 +76,44 @@ public class TokenController : Controller
         return Unauthorized("The username or password is incorrect");
     }
 
+    //for ease of testing only
+    [HttpPost("GetAdminToken")]
+    public async Task<IActionResult> GetAdminToken()
+    {
+        var user = _context.Users.FirstOrDefault(u => u.UserName == "Admin@intellitect.com");
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtConfiguration.Secret));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha512);
+
+        if (user != null)
+        {
+            var claims = new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("UserId", user.Id.ToString()),
+                new Claim(Claims.Random, (new Random()).NextDouble().ToString()),
+                new Claim(Claims.UserName, user.UserName.ToString().Substring(0,user.UserName.ToString().IndexOf("@"))),
+            };
+
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
+
+            var token = new JwtSecurityToken(
+                issuer: _jwtConfiguration.Issuer,
+                audience: _jwtConfiguration.Audience,
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(_jwtConfiguration.ExpirationInMinutes),
+                signingCredentials: credentials
+            );
+            var jwtToken = new JwtSecurityTokenHandler().WriteToken(token);
+            return Ok(new { token = jwtToken });
+        }
+        return BadRequest();
+    }
+
     [HttpGet("test")]
     [Authorize]
     public string Test()
@@ -79,24 +122,25 @@ public class TokenController : Controller
     }
 
     [HttpGet("testadmin")]
-    [Authorize(Roles=Roles.Admin)]
+    [Authorize(Roles = Roles.Admin)]
     public string TestAdmin()
     {
         return "Authorized as Admin";
     }
 
     [HttpGet("testruleroftheuniverse")]
-    [Authorize(Roles="RulerOfTheUniverse,Meg")]
+    [Authorize(Roles = Roles.MasterOfTheUniverse)]
     public string TestRulerOfTheUniverseOrMeg()
     {
         return "Authorized as Ruler of the Universe or Meg";
     }
 
     [HttpGet("testrandomadmin")]
-    [Authorize(Policy=Policies.RandomAdmin)]
+    [Authorize(Policy = Policies.Over21)]
+    [Authorize(Roles = Roles.MasterOfTheUniverse)]
     public string TestRandomAdmin()
     {
-        return $"Authorized randomly as Random Admin with {User.Identities.First().Claims.First(c => c.Type == Claims.Random).Value}";
+        return $"Authorized as Ruler of the Universe and over 21";
     }
 
 }
