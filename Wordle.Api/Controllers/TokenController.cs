@@ -25,6 +25,7 @@ public class TokenController : Controller
     [HttpPost("GetToken")]
     public async Task<IActionResult> GetToken([FromBody] UserCredentials userCredentials)
     {
+        //check to make sure there is a username and password submitted
         if (string.IsNullOrEmpty(userCredentials.Username))
         {
             return BadRequest("Username is required");
@@ -34,10 +35,12 @@ public class TokenController : Controller
             return BadRequest("Password is required");
         }
 
+        //find user account specified
         var user = _context.Users.FirstOrDefault(u => u.UserName == userCredentials.Username);
 
         if (user is null) { return Unauthorized("The user account was not found"); }
 
+        //validate password if account is found
         bool results = await _userManager.CheckPasswordAsync(user, userCredentials.Password);
         if (results)
         {
@@ -51,6 +54,7 @@ public class TokenController : Controller
                 new Claim("UserId", user.Id.ToString()),
                 new Claim(Claims.Random, (new Random()).NextDouble().ToString()),
                 new Claim(Claims.UserName, user.UserName.ToString().Substring(0,user.UserName.ToString().IndexOf("@"))),
+                new Claim(Claims.DateOfBirth, user.DateOfBirth)
             };
 
             var roles = await _userManager.GetRolesAsync(user);
@@ -132,10 +136,11 @@ public class TokenController : Controller
     }
 
     [HttpGet("testrandomadmin")]
-    [Authorize(Policy = Policies.RandomAdmin)]
+    [Authorize(Policy = Policies.Over21)]
+    [Authorize(Roles = Roles.MasterOfTheUniverse)]
     public string TestRandomAdmin()
     {
-        return $"Authorized randomly as Random Admin with {User.Identities.First().Claims.First(c => c.Type == Claims.Random).Value}";
+        return $"Authorized as Ruler of the Universe and over 21";
     }
 
 }

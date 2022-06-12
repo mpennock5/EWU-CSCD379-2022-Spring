@@ -5,6 +5,7 @@ namespace Wordle.Api.Identity;
 public static class Policies
 {
     public const string RandomAdmin = "RandomAdmin";
+    public const string Over21 = "Over21";
     
 
     public static void RandomAdminPolicy(AuthorizationPolicyBuilder policy)
@@ -28,40 +29,21 @@ public static class Policies
         {
             //get the user and check age
             var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
-            return over21(userBDay);
+            return Is21(userBDay);
 
         });
     }
 
-    //policy to verify age is 21+ && MasterOfTheUniverse
-    public const string MasterOfTheUniverse = "MasterOfTheUniverse";
-    public static void MasterOfTheUniversePolicy(AuthorizationPolicyBuilder policy)
-    {
-        policy.RequireClaim(Claims.MasterOfTheUniverse);
-        policy.RequireAssertion(context =>
-        {
-            var user = context.User.Claims.FirstOrDefault(c => c.Type == Claims.MasterOfTheUniverse);
-            if (user is not null)
-            {
-                bool isMasterOfTheUniverse = Boolean.Parse(user.Value);
-                if (isMasterOfTheUniverse)
-                {
-                    var userBDay = context.User.Claims.FirstOrDefault(c => c.Type == Claims.DateOfBirth);
-                    return over21(userBDay);
-                }
-            }
-            return false;
-        });
-    }
+   
 
     //helper method
-    private static bool over21(Claim? userBDay)
+
+    private static bool Is21(Claim? userBDay)
     {
         if (userBDay != null)
         {
-            string[] d = userBDay.Value.Split('-');
-            DateTime birthday = new DateTime(int.Parse(d[0]), int.Parse(d[1]), int.Parse(d[2]));
-            if (birthday.AddYears(21) <= DateTime.Today)
+            var parsedDate = DateTime.Parse(userBDay.Value).AddYears(21);
+            if (DateTime.Compare(parsedDate, DateTime.Now) <= 0)
             {
                 return true;
             }

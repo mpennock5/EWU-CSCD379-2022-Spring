@@ -45,12 +45,9 @@ namespace Wordle.Api.Identity
                //there is a problem here with having multiple roles, only on shows up
                 if (result.Succeeded)
                 {
-                    List<string> roles = new List<string>();
-                    roles.Add(Roles.Admin);
-                    roles.Add(Roles.MasterOfTheUniverse);
-                    await userManager.AddToRolesAsync(user, roles);
-                    //await userManager.AddToRoleAsync(user, Roles.Admin);
-                    //await userManager.AddToRoleAsync(user, Roles.MasterOfTheUniverse);
+
+                    await userManager.AddToRoleAsync(user, Roles.Admin);
+                    await userManager.AddToRoleAsync(user, Roles.MasterOfTheUniverse);
 
                 }
             }
