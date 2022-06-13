@@ -152,51 +152,81 @@ export default class IndexPage extends Vue {
     //check permissions
     //if valid submit new word to controller
     if (sessionStorage.getItem('AddRemove') == 'true') {
+      this.$axios
+        .post('/api/Word/AddWord', word)
+        .then((result) => {
+          if (result.status == 200) {
+            this.actionSuccess = true
+            this.actionVisible = true
+            this.searchWords()
+          } else {
+            this.actionSuccess = false
+            this.actionVisible = true
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.actionSuccess = false
+          this.actionVisible = true
+        })
     } else {
+      this.actionSuccess = false
     }
     //if response is favorable flash success popup
     //else flash fail popup and a reason
     //re-run search
-    this.searchWords()
-    this.actionVisible = true
   }
 
   deleteWord(word: string) {
     //check permissions
     //if valid submit delete request to controller
     if (sessionStorage.getItem('AddRemove') == 'true') {
-      this.actionSuccess = true
+      this.$axios
+        .post('/api/Word/DeleteWord', word)
+        .then((result) => {
+          if (result.status == 200) {
+            this.actionSuccess = true
+            this.actionVisible = true
+            this.searchWords()
+          } else {
+            this.actionSuccess = false
+            this.actionVisible = true
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.actionSuccess = false
+          this.actionVisible = true
+        })
     } else {
       this.actionSuccess = false
     }
     //if response is favorable flash success popup
     //else flash fail popup and a reason
     //re-run search
-    this.searchWords()
-    this.actionVisible = true
   }
 
   commonFlag(word: string, flag: boolean) {
     if (sessionStorage.getItem('common')) {
       //change flag
-      this.$axios.post('/api/Word/SetCommonWord', { word, flag })
-      .then((result) => {
-        if (result.status == 200) {
-         this.actionSuccess = true
-         this.actionVisible = true
-         this.searchWords()
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-        this.actionSuccess = false
-        this.actionVisible = true
-      })
+      this.$axios
+        .post('/api/Word/SetCommonWord', { word, flag })
+        .then((result) => {
+          if (result.status == 200) {
+            this.actionSuccess = true
+            this.actionVisible = true
+            this.searchWords()
+          }
+        })
+        .catch((error) => {
+          console.log(error)
+          this.actionSuccess = false
+          this.actionVisible = true
+        })
     } else {
       this.actionSuccess = false
       this.actionVisible = true
     }
-    
   }
 
   checkAuthorizedCommon() {
