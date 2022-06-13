@@ -151,7 +151,7 @@ export default class IndexPage extends Vue {
     //if valid submit new word to controller
     if (sessionStorage.getItem('AddRemove') == 'true') {
       this.$axios
-        .post('/api/Word/AddWord', word)
+        .post('/api/Word/AddWord', word, {headers: {"Content-Type": "application/json"} })
         .then((result) => {
           if (result.status == 200) {
             this.actionSuccess = true
@@ -181,7 +181,7 @@ export default class IndexPage extends Vue {
     //if valid submit delete request to controller
     if (sessionStorage.getItem('AddRemove') == 'true') {
       this.$axios
-        .post('/api/Word/DeleteWord', word)
+        .post('/api/Word/DeleteWord', word, {headers: {"Content-Type": "application/json"} })
         .then((result) => {
           if (result.status == 200) {
             this.actionSuccess = true
@@ -213,13 +213,11 @@ export default class IndexPage extends Vue {
   //   query: this.searchTerm,
   // }}
 
-  commonFlag(word: string, common: boolean) {
+  commonFlag(word: string, isCommon: boolean) {
     if (sessionStorage.getItem('common')) {
       //change flag
       this.$axios
-        .post('/api/Word/SetCommonWord', null, {
-          params: { target: word, common },
-        })
+        .post('/api/Word/SetCommonWord', word, {headers: {"Content-Type": "application/json"}} )
         .then((result) => {
           if (result.status == 200) {
             this.actionSuccess = true

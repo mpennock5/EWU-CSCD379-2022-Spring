@@ -50,7 +50,7 @@ public class WordController : Controller
     }
     [HttpPost("SetCommonWord")]
     //[Authorize]
-    public IActionResult SetCommonWord([FromBody] string target, bool common)
+    public IActionResult SetCommonWord([FromBody] string target)
     {
         var word = _context.Words.FirstOrDefault(x=>x.Value == target);
         if(word == null)
@@ -58,7 +58,15 @@ public class WordController : Controller
             return StatusCode(500, "An error has occured. Contact your database administrator");
         }
 
-        word.Common = common;
+        if (word.Common)
+        {
+            word.Common = false;
+        }
+        else
+        {
+            word.Common = true;
+        }
+        _context.SaveChanges();
         return Ok();
     }
     [HttpPost("DeleteWord")]

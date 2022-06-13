@@ -21,7 +21,8 @@ export class JWT {
 
     public static setToken(token:string, axios: NuxtAxiosInstance) {
         this.tokenInstance = token;
-        axios.setHeader('Authorization', `Bearer ${token}`);
+        //axios.setHeader('Authorization', `Bearer ${token}`);
+        axios.setToken(token)
         const parts = token.split('.');
         const payload = JSON.parse(atob(parts[1]));
         this._tokenData = Object.assign(new WordleToken, payload);
