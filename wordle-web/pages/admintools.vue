@@ -52,15 +52,12 @@
                 label="Add"
                 v-model="wordToAdd"
                 outlined
+                counter="5"
+                min="5"
+                max="5"
+                :append-icon="'mdi-plus-circle-outline'"
+                @click:append="addWord(wordToAdd)"
               ></v-text-field>
-              <v-btn
-                elevation="0"
-                icon
-                @click="addWord(wordToAdd)"
-                class="mt-3"
-              >
-                <v-icon x-large>mdi-plus-circle-outline</v-icon></v-btn
-              >
             </div>
           </v-col>
         </v-row>
@@ -83,8 +80,8 @@
               <td>{{ word.item1 }}</td>
               <td style="text-align: center">{{ word.item2 }}</td>
               <td style="text-align: right">
-                <v-btn @click="commonFlag(word.item1,true)">common+</v-btn>
-                <v-btn @click="commonFlag(word.item1,false)">common-</v-btn>
+                <v-btn @click="commonFlag(word.item1, true)">common+</v-btn>
+                <v-btn @click="commonFlag(word.item1, false)">common-</v-btn>
                 <v-btn @click="deleteWord(word.item1)">delete</v-btn>
               </td>
             </tr>
@@ -154,10 +151,8 @@ export default class IndexPage extends Vue {
   addWord(word: string) {
     //check permissions
     //if valid submit new word to controller
-    if(sessionStorage.getItem('AddRemove') == 'true'){
-
+    if (sessionStorage.getItem('AddRemove') == 'true') {
     } else {
-
     }
     //if response is favorable flash success popup
     //else flash fail popup and a reason
@@ -169,8 +164,7 @@ export default class IndexPage extends Vue {
   deleteWord(word: string) {
     //check permissions
     //if valid submit delete request to controller
-    if(sessionStorage.getItem('AddRemove') == 'true'){
-
+    if (sessionStorage.getItem('AddRemove') == 'true') {
       this.actionSuccess = true
     } else {
       this.actionSuccess = false
@@ -185,10 +179,24 @@ export default class IndexPage extends Vue {
   commonFlag(word: string, flag: boolean) {
     if (sessionStorage.getItem('common')) {
       //change flag
+      this.$axios.post('/api/Word/SetCommonWord', { word, flag })
+      .then((result) => {
+        if (result.status == 200) {
+         this.actionSuccess = true
+         this.actionVisible = true
+         this.searchWords()
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        this.actionSuccess = false
+        this.actionVisible = true
+      })
     } else {
       this.actionSuccess = false
+      this.actionVisible = true
     }
-    this.actionVisible = true
+    
   }
 
   checkAuthorizedCommon() {

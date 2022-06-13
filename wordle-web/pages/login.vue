@@ -20,17 +20,14 @@
               @click:append="passwordVisible = !passwordVisible"
             ></v-text-field>
           </v-col>
-            
-            <v-spacer></v-spacer>
-            <v-btn @click="login()" class="mb-3">
-              Login
-            </v-btn>
-            <v-spacer></v-spacer>
 
-            <v-alert  :type="loginResult.type">
-              {{loginResult.text}}
-            </v-alert>
+          <v-spacer></v-spacer>
+          <v-btn @click="login()" class="mb-3"> Login </v-btn>
+          <v-spacer></v-spacer>
 
+          <v-alert :type="loginResult.type">
+            {{ loginResult.text }}
+          </v-alert>
         </div>
       </v-card>
     </v-container>
@@ -50,7 +47,7 @@ export default class Login extends Vue {
   loginLoading = true
 
   login() {
-    sessionStorage.removeItem("userAccount")
+    sessionStorage.clear()
     this.loginLoading = true
     this.$axios
       .post('Token/GetToken', {
@@ -58,31 +55,32 @@ export default class Login extends Vue {
         password: this.password,
       })
       .then((result) => {
-          if (result.status == 200) {
-              JWT.setToken(result.data.token, this.$axios)
-          this.$axios.defaults.headers.common.Authorization =
-            'Bearer ' + result.data.token
-            sessionStorage.setItem("userAccount" , this.email);
+        if (result.status == 200) {
+          JWT.setToken(result.data.token, this.$axios)
+        //   this.$axios.defaults.headers.common.Authorization =
+        //     'Bearer ' + result.data.token
+          sessionStorage.setItem('userAccount', this.email)
           this.loginSuccess = true
           this.loginLoading = false
         } else {
-            this.loginSuccess = false
-            this.loginLoading = false
+          this.loginSuccess = false
+          this.loginLoading = false
         }
-      }).catch((error) =>{
+      })
+      .catch((error) => {
         this.loginSuccess = false
         this.loginLoading = false
-        console.log('error thrown from login');
+        console.log('error thrown from login')
       })
   }
 
   get loginResult() {
-    if ((this.loginLoading == false)) {
-      if ((this.loginSuccess == true)) {
+    if (this.loginLoading == false) {
+      if (this.loginSuccess == true) {
         return { type: 'success', text: 'Login Successful' }
       }
 
-      if ((this.loginSuccess == false)) {
+      if (this.loginSuccess == false) {
         return { type: 'error', text: 'Login Failed' }
       }
     }
