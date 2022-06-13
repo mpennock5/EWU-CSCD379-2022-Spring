@@ -57,8 +57,8 @@ export default class Login extends Vue {
       .then((result) => {
         if (result.status == 200) {
           JWT.setToken(result.data.token, this.$axios)
-        //   this.$axios.defaults.headers.common.Authorization =
-        //     'Bearer ' + result.data.token
+          this.$axios.defaults.headers.common.Authorization =
+            'Bearer ' + result.data.token
           sessionStorage.setItem('userAccount', this.email)
           this.loginSuccess = true
           this.loginLoading = false

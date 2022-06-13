@@ -9,12 +9,9 @@
 
       <!-- action success or fail response -->
       <v-row align-content="center" justify="center">
-        <v-alert :type="actionResult.type">
-          <v-text v-if="actionVisible">
-            {{ actionResult.text }}
-          </v-text>
+        <v-alert v-if="actionVisible">
+          {{ actionResult.text }}
           <v-btn
-            v-if="actionVisible"
             class="pa-0 ma-0"
             color="red darken-2"
             @click="actionVisible = !actionVisible"
@@ -171,6 +168,7 @@ export default class IndexPage extends Vue {
         })
     } else {
       this.actionSuccess = false
+      this.actionVisible = true
     }
     //if response is favorable flash success popup
     //else flash fail popup and a reason
@@ -200,17 +198,28 @@ export default class IndexPage extends Vue {
         })
     } else {
       this.actionSuccess = false
+      this.actionVisible = true
     }
     //if response is favorable flash success popup
     //else flash fail popup and a reason
     //re-run search
   }
 
+  // {
+  // params: {
+  //   pageSize: this.currentPageSize,
+  //   currentPage: this.currentPage,
+  //   query: this.searchTerm,
+  // }}
+
   commonFlag(word: string, flag: boolean) {
     if (sessionStorage.getItem('common')) {
       //change flag
       this.$axios
-        .post('/api/Word/SetCommonWord', { word, flag })
+        .post('/api/Word/SetCommonWord', {
+          word,
+          flag,
+        })
         .then((result) => {
           if (result.status == 200) {
             this.actionSuccess = true

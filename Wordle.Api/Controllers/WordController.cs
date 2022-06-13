@@ -50,7 +50,7 @@ public class WordController : Controller
     }
     [HttpPost("SetCommonWord")]
     [Authorize]
-    public IActionResult SetCommonWord(string target, bool common)
+    public IActionResult SetCommonWord([FromBody] string target, bool common)
     {
         var word = _context.Words.FirstOrDefault(x=>x.Value == target);
         if(word == null)
@@ -64,7 +64,7 @@ public class WordController : Controller
     [HttpPost("DeleteWord")]
     [Authorize(Policy = Policies.Over21)]
     [Authorize(Roles = Roles.MasterOfTheUniverse)]
-    public IActionResult DeleteWord(string target)
+    public IActionResult DeleteWord([FromBody] string target)
     {
        
         if (_wordService.DeleteWordByValue(target))
@@ -79,7 +79,7 @@ public class WordController : Controller
     [HttpPost("AddWord")]
     [Authorize(Policy = Policies.Over21)]
     [Authorize(Roles = Roles.MasterOfTheUniverse)]
-    public IActionResult AddWord(string target)
+    public IActionResult AddWord([FromBody] string target)
     {
         if (_wordService.AddWordByValue(target))
         {
