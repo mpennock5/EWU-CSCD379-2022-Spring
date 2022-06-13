@@ -49,7 +49,7 @@ public class WordController : Controller
         throw new Exception("controller fail");
     }
     [HttpPost("SetCommonWord")]
-    [Authorize]
+    //[Authorize]
     public IActionResult SetCommonWord([FromBody] string target, bool common)
     {
         var word = _context.Words.FirstOrDefault(x=>x.Value == target);

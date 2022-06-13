@@ -23,7 +23,7 @@
       </v-row>
 
       <!-- search and action buttons -->
-      <v-card-text>
+      <v-card-text class="mt-4">
         <v-row>
           <v-col>
             <v-text-field
@@ -213,13 +213,12 @@ export default class IndexPage extends Vue {
   //   query: this.searchTerm,
   // }}
 
-  commonFlag(word: string, flag: boolean) {
+  commonFlag(word: string, common: boolean) {
     if (sessionStorage.getItem('common')) {
       //change flag
       this.$axios
-        .post('/api/Word/SetCommonWord', {
-          word,
-          flag,
+        .post('/api/Word/SetCommonWord', null, {
+          params: { target: word, common },
         })
         .then((result) => {
           if (result.status == 200) {
