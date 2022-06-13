@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using Wordle.Api.Data;
 using Wordle.Api.Services;
 using Wordle.Api.Dtos;
+using Wordle.Api.Identity;
 
 namespace Wordle.Api.Controllers;
 
@@ -61,7 +62,8 @@ public class WordController : Controller
         return Ok();
     }
     [HttpPost("DeleteWord")]
-    [Authorize]
+    [Authorize(Policy = Policies.Over21)]
+    [Authorize(Roles = Roles.MasterOfTheUniverse)]
     public IActionResult DeleteWord(string target)
     {
        
@@ -75,7 +77,8 @@ public class WordController : Controller
     }
 
     [HttpPost("AddWord")]
-    [Authorize]
+    [Authorize(Policy = Policies.Over21)]
+    [Authorize(Roles = Roles.MasterOfTheUniverse)]
     public IActionResult AddWord(string target)
     {
         if (_wordService.AddWordByValue(target))
