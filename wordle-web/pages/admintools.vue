@@ -43,7 +43,7 @@
 
         <v-divider></v-divider>
         <!-- 
-        section containing the words, common flag,
+        section containing the words, common flag, 
         delete and change common flag button for each word 
         -->
         <v-simple-table>
@@ -74,7 +74,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator'
+import { Component, Vue, Watch } from 'vue-property-decorator'
 
 @Component
 export default class IndexPage extends Vue {
@@ -91,6 +91,11 @@ export default class IndexPage extends Vue {
 
   //startup
   mounted() {
+    this.searchWords()
+  }
+  
+  @Watch('searchTerm')
+  searchTermUpdate(){
     this.searchWords()
   }
 
