@@ -50,6 +50,7 @@ export default class Login extends Vue {
   loginLoading = true
 
   login() {
+    sessionStorage.removeItem("userAccount")
     this.loginLoading = true
     this.$axios
       .post('Token/GetToken', {
@@ -61,6 +62,7 @@ export default class Login extends Vue {
               JWT.setToken(result.data.token, this.$axios)
           this.$axios.defaults.headers.common.Authorization =
             'Bearer ' + result.data.token
+            sessionStorage.setItem("userAccount" , this.email);
           this.loginSuccess = true
           this.loginLoading = false
         } else {
