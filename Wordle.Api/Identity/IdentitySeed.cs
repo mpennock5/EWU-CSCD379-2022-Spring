@@ -51,6 +51,26 @@ namespace Wordle.Api.Identity
 
                 }
             }
+            if(await userManager.FindByNameAsync("YoungAdmin@intellitect.com") == null)
+            {
+                AppUser user = new AppUser
+                {
+                    UserName = "YoungAdmin@intellitect.com",
+                    Email = "YoungAdmin@intellitect.com",
+                    DateOfBirth = "2007-01-01",
+                };
+
+                IdentityResult result = userManager.CreateAsync(user, "P@ssw0rd123").Result;
+
+                //there is a problem here with having multiple roles, only on shows up
+                if (result.Succeeded)
+                {
+
+                    await userManager.AddToRoleAsync(user, Roles.Admin);
+                    await userManager.AddToRoleAsync(user, Roles.MasterOfTheUniverse);
+
+                }
+            }
         }
 
         private static async Task SeedOver21UserAsync(UserManager<AppUser> userManager)
