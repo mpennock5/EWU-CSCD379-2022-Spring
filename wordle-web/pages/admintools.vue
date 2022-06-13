@@ -61,6 +61,13 @@
         </v-row>
 
         <v-divider></v-divider>
+
+        <v-pagination
+          v-model="pageDTO"
+          :length="20"
+          :total-visible="7"
+          @input="accessPage"
+        ></v-pagination>
         <!-- 
         section containing the words, common flag, 
         delete and change common flag button for each word 
@@ -120,6 +127,11 @@ export default class IndexPage extends Vue {
 
   @Watch('searchTerm')
   searchTermUpdate() {
+    this.searchWords()
+  }
+
+  accessPage(newPage: number) {
+    this.currentPage = newPage
     this.searchWords()
   }
 
