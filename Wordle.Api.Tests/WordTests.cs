@@ -44,6 +44,35 @@ namespace Wordle.Api.Tests
             Word.SeedWords(context, "WordsTest.csv");
             sut.GetWordPage(10, 1, ";");
         }
+        [TestMethod]
+        public void AddWord()
+        {
+            using var context = new TestAppDbContext(Options);
+            WordController sut = new(new Services.WordService(context), context);
+            Word.SeedWords(context, "WordsTest.csv");
+
+            sut.AddWord("aaaaa");
+            var word = context.Words.FirstOrDefault(x=>x.Value=="aaaaa");
+            Assert.IsNotNull(word);
+
+            Assert.AreEqual("aaaaa", word.Value);
+
+        }
+        [TestMethod]
+        public void DeleteWord()
+        {
+            using var context = new TestAppDbContext(Options);
+            WordController sut = new(new Services.WordService(context), context);
+            Word.SeedWords(context, "WordsTest.csv");
+
+            var word = context.Words.FirstOrDefault(x => x.Value == "aalii");
+            Assert.IsNotNull(word);
+
+            sut.DeleteWord("aalii");
+
+            word = context.Words.FirstOrDefault(x => x.Value == "aalii");
+            Assert.IsNull(word);
+        }
         
     }
 }
